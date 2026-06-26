@@ -1,0 +1,32 @@
+sequenceDiagram
+    participant R as Requester
+    participant M as Manager
+    participant P as Procurement
+    participant V as Vendor
+    participant F as Finance
+    participant FD as Finance Director
+
+    R->>M: Submit purchase request
+    M-->>R: PR approved
+    M->>P: Forward approved PR
+    P->>V: Issue Purchase Order
+    V-->>P: Order confirmation
+    V->>F: Submit invoice
+    F->>F: 3-way match verification
+
+    %% ⚡ CHANGED SECTION — discrepancy handling
+    rect rgba(186,117,23,0.15)
+    Note over F,FD: ADDED — discrepancy handling path
+        alt Match Successful
+            F-->>V: Payment processed (NET30)
+        else Match Failed
+            F->>P: Notify discrepancy
+            F->>FD: Escalate to Finance Director
+            P->>V: Request corrected invoice
+            V-->>F: Revised invoice submitted
+            F->>F: Re-run 3-way match
+            FD-->>F: Manual approval granted
+            F-->>V: Payment processed after correction
+        end
+    end
+    %% END CHANGED SECTION
