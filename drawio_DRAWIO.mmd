@@ -13,9 +13,9 @@ flowchart TD
     %% ⚡ CHANGED SECTION
     K --> |No| M1[Execute Backout Plan]
     M1 --> M2{Backout Successful?}
-    M2 --> |Yes| M3[Incident Report]
-    M2 --> |No| M4[Escalate to Major Incident]
-    M3 --> N([Close Change])
-    M4 --> N
+    M2 --> |Yes| M3[Document Backout & Reschedule]
+    M2 --> |No| M[Incident Report]
+    M3 --> I
     %% ⚡ END CHANGED SECTION
-    L --> N
+    L --> N([Close Change])
+    M --> N
