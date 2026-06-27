@@ -1,0 +1,19 @@
+flowchart LR
+    A([Dev Complete]) --> B[Peer Code Review]
+    B --> C{Tests Pass?}
+    C --> |Fail| A
+    C --> |Pass| D[QA Validation]
+    D --> E{QA Sign-off?}
+    E --> |No| A
+    E --> |Yes| F[Security Scan]
+    F --> G{Clear?}
+    G --> |No| H[Fix Vulnerabilities]
+    H --> F
+    %% ⚡ CHANGED SECTION
+    G --> |Yes| K[Compliance Review]
+    K --> L{Compliant?}
+    L --> |No| M[Address Compliance Issues]
+    M --> K
+    L --> |Yes| I[VP Engineering Approval]
+    %% ⚡ END CHANGED SECTION
+    I --> J([Production Release])
