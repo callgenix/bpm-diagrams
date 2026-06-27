@@ -14,8 +14,8 @@ sequenceDiagram
         S->>IT: Provision accounts
     else No approval after 48h
         S->>M: Escalate stalled approval
-        M->>F: Expedite credit check (48h breach)
-        F-->>M: Escalated approval response
+        M->>F: Escalation: approval overdue (48h+)
+        F-->>M: Expedited approval
         M-->>S: Approval confirmed
         S->>IT: Provision accounts
     end
