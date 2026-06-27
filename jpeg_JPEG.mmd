@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant C as Customer
+    participant S as Sales Team
+    participant M as Sales Manager
+    participant F as Finance
+    participant IT as IT Ops
+
+    C->>S: Submit onboarding request
+    S->>F: Credit check request
+    F-->>S: Approval (24h SLA)
+
+    %% ⚡ CHANGED SECTION
+    alt Approval received within 24h
+        S->>IT: Provision accounts
+    else No approval after 48h
+        S->>M: Escalate stalled approval
+        M->>F: Escalation: approval overdue (48h+)
+        F-->>M: Expedited approval
+        M-->>S: Approval confirmed
+        S->>IT: Provision accounts
+    end
+    %% ⚡ END CHANGED SECTION
+
+    IT-->>C: Welcome email + credentials
+    C->>IT: First login confirmation
+    IT->>S: Onboarding complete
+    S->>C: Kickoff meeting scheduled
