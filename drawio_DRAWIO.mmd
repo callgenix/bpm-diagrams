@@ -1,30 +1,78 @@
 flowchart TD
-    A([Change Request]) --> B{Emergency?}
+    A([Change Request]) --> A1[/"📋 Documentation Gate 1:\nBusiness Justification & Risk Assessment"/]
+    %% ⚡ CHANGED SECTION - Documentation Gate 1
+    A1 --> A2{Documentation\nComplete?}
+    A2 --> |No| A1
+    A2 --> |Yes| B{Emergency?}
+    %% ⚡ END CHANGED SECTION
+
     B --> |Yes| C[Emergency CAB]
     B --> |No| D[Standard Review]
-    C --> E[Expedited Approval]
-    D --> F[Weekly CAB Meeting]
-    F --> G{Approved?}
-    G --> |Yes| H[Schedule Change Window]
-    G --> |No| I[Return to Requester]
-    H --> J[Implementation]
-    J --> K{Successful?}
-    K --> |Yes| L[Post-Impl Review]
-    %% ⚡ CHANGED SECTION
-    K --> |No| M1[Execute Backout Plan]
-    M1 --> M2{Backout Successful?}
-    M2 --> |Yes| M3[Incident Report]
-    M2 --> |No| M4[Escalate to Emergency CAB]
-    M4 --> M3
-    M3 --> N([Close Change])
+
+    %% ⚡ CHANGED SECTION - SOX Compliance Check 1
+    C --> C1{{"🔒 SOX Control:\nSegregation of Duties Check\n(Role: Compliance Officer)"}}
+    C1 --> |Pass| E[Expedited Approval]
+    C1 --> |Fail| C2[Remediate SoD Conflict\n👤 Role: Change Manager]
+    C2 --> C1
     %% ⚡ END CHANGED SECTION
-    L --> N
+
+    D --> F[Weekly CAB Meeting\n👤 Role: CAB Chair - Accountable]
+
+    %% ⚡ CHANGED SECTION - Documentation Gate 2
+    F --> F1[/"📋 Documentation Gate 2:\nImpact Analysis & Test Evidence"/]
+    F1 --> F2{Documentation\nComplete?}
+    F2 --> |No| F1
+    F2 --> |Yes| G{Approved?\n👤 Role: CAB Members - Responsible}
+    %% ⚡ END CHANGED SECTION
+
+    G --> |Yes| G1{{"🔒 SOX Control:\nApproval Authorization Check\n(Role: Compliance Officer)"}}
+    %% ⚡ CHANGED SECTION - SOX Compliance Check 2
+    G1 --> |Pass| H[Schedule Change Window\n👤 Role: Change Manager - Accountable]
+    G1 --> |Fail| G2[Obtain Proper Authorization\n👤 Role: Change Owner]
+    G2 --> G1
+    %% ⚡ END CHANGED SECTION
+
+    G --> |No| I[Return to Requester\n👤 Role: Change Manager - Informed]
+
+    %% ⚡ CHANGED SECTION - Documentation Gate 3
+    H --> H1[/"📋 Documentation Gate 3:\nImplementation Plan & Backout Plan"/]
+    H1 --> H2{Documentation\nComplete?}
+    H2 --> |No| H1
+    H2 --> |Yes| J[Implementation\n👤 Role: Technical Team - Responsible\n👤 Role: Change Owner - Accountable]
+    %% ⚡ END CHANGED SECTION
+
+    J --> K{Successful?}
+    K --> |Yes| L[Post-Impl Review\n👤 Role: Change Manager - Responsible]
+
+    K --> |No| M1[Execute Backout Plan\n👤 Role: Technical Team - Responsible]
+    M1 --> M2{Backout Successful?}
+    M2 --> |Yes| M3[Incident Report\n👤 Role: Change Owner - Accountable]
+    M2 --> |No| M4[Escalate to Emergency CAB\n👤 Role: CAB Chair - Accountable]
+    M4 --> M3
+
+    %% ⚡ CHANGED SECTION - SOX Compliance Check 3 & Final Documentation Gate
+    L --> L1{{"🔒 SOX Control:\nChange Evidence & Audit Trail Review\n(Role: Compliance Officer)"}}
+    L1 --> |Pass| L2[/"📋 Documentation Gate 4:\nPost-Implementation Evidence Package"/]
+    L1 --> |Fail| L3[Remediate Audit Findings\n👤 Role: Change Owner]
+    L3 --> L1
+    L2 --> N([Close Change\n👤 Role: Change Manager - Responsible\n👤 Role: Compliance Officer - Consulted])
+    M3 --> L1
+    %% ⚡ END CHANGED SECTION
+
+    %% ⚡ CHANGED SECTION - RACI Legend
+    subgraph RACI_Legend["📌 RACI Matrix Legend"]
+        R1["R - Responsible: Performs the work"]
+        R2["A - Accountable: Final decision authority"]
+        R3["C - Consulted: Provides input"]
+        R4["I - Informed: Kept updated"]
+    end
+    %% ⚡ END CHANGED SECTION
 
 %% ========================================================
 %% CLAUDE'S CHANGE INTERPRETATION
 %% ========================================================
-%% OBJECTIVE: Ensure failed implementations follow a structured rollback procedure before incident reporting, minimizing service disruption during change windows.
+%% OBJECTIVE: Ensure the change management process meets SOX audit requirements by embedding mandatory compliance checkpoints, role accountability via RACI labels, and documentation gates that prevent changes from progressing without proper evidence and authorization.
 %%
 %% EXPLANATION:
-%% Inserted an "Execute Backout Plan" step between a failed implementation and the incident report. When implementation fails, the backout plan is executed first. A decision node checks whether the backout was successful — if not, the issue is escalated to Emergency CAB before proceeding to the incident report and change closure.
+%% Added four documentation gates (business justification, impact analysis/test evidence, implementation/backout plans, and post-implementation evidence package) as parallelogram-shaped nodes with completion loops. Inserted three SOX compliance control checkpoints (segregation of duties, approval authorization, and audit trail review) as hexagonal decision nodes with remediation loops for failures. Labeled all process steps with RACI roles (Change Manager, Change Owner, CAB Chair, Technical Team, Compliance Officer) indicating Responsible, Accountable, Consulted, or Informed designations. Added a RACI legend subgraph for reference. Rerouted the incident report path through the final SOX audit trail review to ensure failed changes also undergo compliance verification before closure.
 %% ========================================================
