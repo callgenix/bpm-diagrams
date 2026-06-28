@@ -1,0 +1,36 @@
+sequenceDiagram
+    participant R as Requester
+    participant M as Manager
+    participant P as Procurement
+    participant V as Vendor
+    participant F as Finance
+
+    R->>M: Submit purchase request
+    M-->>R: PR approved
+    M->>P: Forward approved PR
+    P->>V: Issue Purchase Order
+    V-->>P: Order confirmation
+    V->>F: Submit invoice
+    F->>F: 3-way match verification
+
+    %% ⚡ CHANGED SECTION
+    alt 3-way match successful
+        F-->>V: Payment processed (NET30)
+    else 3-way match failed - discrepancy found
+        F-->>P: Notify discrepancy (PO/Invoice/Receipt mismatch)
+        P->>V: Request invoice correction / clarification
+        V-->>P: Submit revised invoice or documentation
+        P->>F: Forward corrected documents
+        F->>F: Re-verify 3-way match
+        F-->>V: Payment processed (NET30)
+    end
+    %% ⚡ END CHANGED SECTION
+
+%% ========================================================
+%% CLAUDE'S CHANGE INTERPRETATION
+%% ========================================================
+%% OBJECTIVE: Ensure invoice discrepancies are formally resolved before payment, preventing financial losses from mismatched purchase orders, receipts, and invoices.
+%%
+%% EXPLANATION:
+%% Replaced the unconditional payment step with an alt/else block: when the 3-way match succeeds, payment proceeds normally; when it fails, Finance notifies Procurement of the discrepancy, Procurement coordinates with the Vendor to obtain corrected documentation, and Finance re-verifies before releasing payment.
+%% ========================================================
