@@ -1,72 +1,30 @@
 flowchart TD
-    A([Change Request]) --> A1[/Documentation Gate 1:\nRequester submits RFC with\nSOX control mapping/]
-    %% ⚡ CHANGED SECTION - Documentation Gate 1 & Compliance Check
-    A1 --> A2{SOX Compliance\nPre-Check}
-    A2 --> |Pass| B{Emergency?}
-    A2 --> |Fail| A3[Return for SOX\nRemediation]
-    A3 --> A1
-    %% ⚡ END CHANGED SECTION
+    A([Change Request]) --> B{Emergency?}
     B --> |Yes| C[Emergency CAB]
     B --> |No| D[Standard Review]
     C --> E[Expedited Approval]
-    %% ⚡ CHANGED SECTION - SOX checkpoint for emergency path
-    E --> E1{SOX Emergency\nWaiver Approved?}
-    E1 --> |Yes| H[Schedule Change Window]
-    E1 --> |No| D
-    %% ⚡ END CHANGED SECTION
     D --> F[Weekly CAB Meeting]
-    %% ⚡ CHANGED SECTION - Documentation Gate 2 before CAB
-    D --> D1[/Documentation Gate 2:\nRisk Assessment &\nSOX Impact Analysis/]
-    D1 --> F
-    %% ⚡ END CHANGED SECTION
     F --> G{Approved?}
-    G --> |Yes| H
+    G --> |Yes| H[Schedule Change Window]
     G --> |No| I[Return to Requester]
-    %% ⚡ CHANGED SECTION - SOX Segregation of Duties check
-    H --> H1{SOX SoD Check:\nImplementer ≠ Approver?}
-    H1 --> |Yes| J[Implementation]
-    H1 --> |No| H2[Reassign Implementer\nper SoD Policy]
-    H2 --> J
-    %% ⚡ END CHANGED SECTION
+    H --> J[Implementation]
     J --> K{Successful?}
     K --> |Yes| L[Post-Impl Review]
+    %% ⚡ CHANGED SECTION
     K --> |No| M1[Execute Backout Plan]
     M1 --> M2{Backout Successful?}
     M2 --> |Yes| M3[Document Backout & Reschedule]
     M2 --> |No| M[Incident Report]
     M3 --> N
-    %% ⚡ CHANGED SECTION - SOX Audit Documentation Gate & Final Compliance
-    L --> L1[/Documentation Gate 3:\nEvidence Collection &\nAudit Trail Finalization/]
-    L1 --> L2{SOX Post-Impl\nCompliance Review}
-    L2 --> |Compliant| N([Close Change])
-    L2 --> |Non-Compliant| L3[SOX Finding Report\n& Remediation Plan]
-    L3 --> N
     %% ⚡ END CHANGED SECTION
+    L --> N([Close Change])
     M --> N
-
-    %% ⚡ CHANGED SECTION - RACI Role Labels
-    A -.-> |R: Requester\nA: Change Manager| A
-    D -.-> |R: Change Manager\nA: CAB Chair\nC: SOX Compliance Officer\nI: Requester| D
-    F -.-> |R: CAB Chair\nA: IT Director\nC: SOX Compliance Officer\nI: Stakeholders| F
-    J -.-> |R: Implementer\nA: Change Manager\nC: SOX Compliance Officer\nI: Requester| J
-    L -.-> |R: Change Manager\nA: IT Director\nC: SOX Auditor\nI: Requester| L
-    %% ⚡ END CHANGED SECTION
-
-    %% ⚡ CHANGED SECTION - Styling
-    style A1 fill:#FFD700,stroke:#333,color:#000
-    style D1 fill:#FFD700,stroke:#333,color:#000
-    style L1 fill:#FFD700,stroke:#333,color:#000
-    style A2 fill:#FF6B6B,stroke:#333,color:#000
-    style E1 fill:#FF6B6B,stroke:#333,color:#000
-    style H1 fill:#FF6B6B,stroke:#333,color:#000
-    style L2 fill:#FF6B6B,stroke:#333,color:#000
-    %% ⚡ END CHANGED SECTION
 
 %% ════════════════════════════════════════════════════════
 %% CLAUDE'S CHANGE INTERPRETATION
 %% ════════════════════════════════════════════════════════
-%% OBJECTIVE: Ensure change management process meets SOX audit requirements by embedding mandatory compliance checkpoints, segregation of duties validation, documentation gates, and RACI accountability at each critical stage.
+%% OBJECTIVE: Ensure failed implementations follow a structured rollback procedure before escalating to incident management, minimizing service disruption during change windows.
 %%
 %% EXPLANATION:
-%% Added three Documentation Gates (RFC submission with SOX mapping, Risk Assessment & SOX Impact Analysis before CAB, and Evidence Collection & Audit Trail before closure). Inserted SOX compliance checkpoints: a pre-check after submission, an emergency waiver gate for expedited changes, a Segregation of Duties verification before implementation, and a post-implementation compliance review. Added RACI role annotations (Responsible, Accountable, Consulted, Informed) as dotted links on key process nodes. Applied color styling to distinguish documentation gates (gold) from compliance checkpoints (red) for visual clarity.
+%% Replaced the direct link from failed implementation to Incident Report with a backout plan flow: when implementation fails, an "Execute Backout Plan" step is triggered first, followed by a decision node checking if the backout was successful. If the backout succeeds, the change is documented and rescheduled for a future window. If the backout also fails, it then escalates to an Incident Report, preserving the original escalation path for worst-case scenarios.
 %% ════════════════════════════════════════════════════════
