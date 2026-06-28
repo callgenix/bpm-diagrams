@@ -1,59 +1,30 @@
 flowchart TD
-    A([Change Request]) --> A1[/Documentation Gate 1:\nChange Justification & Impact Assessment/]
-    %% ⚡ CHANGED SECTION - Added initial documentation gate
-    A1 --> A2{SOX Compliance\nPre-Check}
-    %% ⚡ CHANGED SECTION - Added SOX pre-check
-    A2 --> |Pass| B{Emergency?}
-    A2 --> |Fail| A3[Return for\nCompliance Remediation]
-    A3 --> A1
+    A([Change Request]) --> B{Emergency?}
     B --> |Yes| C[Emergency CAB]
     B --> |No| D[Standard Review]
-    C --> C1[/Documentation Gate 2:\nEmergency Justification Log/]
-    %% ⚡ CHANGED SECTION - Added emergency documentation gate
-    C1 --> E[Expedited Approval]
-    D --> D1[/Documentation Gate 2:\nRisk & Control Documentation/]
-    %% ⚡ CHANGED SECTION - Added standard documentation gate
-    D1 --> F[Weekly CAB Meeting]
+    C --> E[Expedited Approval]
+    D --> F[Weekly CAB Meeting]
     F --> G{Approved?}
-    G --> |Yes| G1{SOX Control\nValidation}
-    %% ⚡ CHANGED SECTION - Added SOX control validation after approval
-    G1 --> |Pass| H[Schedule Change Window]
-    G1 --> |Fail| G2[Remediate SOX\nControl Gaps]
-    G2 --> F
+    G --> |Yes| H[Schedule Change Window]
     G --> |No| I[Return to Requester]
-    H --> H1[/Documentation Gate 3:\nImplementation Plan & Rollback Plan/]
-    %% ⚡ CHANGED SECTION - Added implementation documentation gate
-    H1 --> J[Implementation]
+    H --> J[Implementation]
     J --> K{Successful?}
     K --> |Yes| L[Post-Impl Review]
-    K --> |No| M[Incident Report]
-    L --> L1{SOX Post-Impl\nAudit Check}
-    %% ⚡ CHANGED SECTION - Added SOX post-implementation audit
-    L1 --> |Pass| L2[/Documentation Gate 4:\nFinal Audit Trail & Evidence Package/]
-    L1 --> |Fail| L3[SOX Remediation &\nRe-Review]
-    L3 --> L1
-    %% ⚡ CHANGED SECTION - Added final documentation gate
-    L2 --> N([Close Change])
-    M --> M1[/Documentation Gate 4:\nIncident & Remediation Records/]
-    %% ⚡ CHANGED SECTION - Added incident documentation gate
-    M1 --> N
+    %% ⚡ CHANGED SECTION
+    K --> |No| M1[Execute Backout Plan]
+    M1 --> M2{Backout Successful?}
+    M2 --> |Yes| M3[Document Backout & Lessons Learned]
+    M2 --> |No| M[Incident Report]
+    M3 --> I
+    %% ⚡ END CHANGED SECTION
+    L --> N([Close Change])
+    M --> N
 
-    %% ⚡ CHANGED SECTION - RACI Role Labels
-    A -.-> |"R: Requester\nA: Change Manager"| A
-    D -.-> |"R: Change Analyst\nA: Change Manager\nC: SOX Compliance Officer\nI: Stakeholders"| D
-    F -.-> |"R: CAB Members\nA: CAB Chair\nC: SOX Compliance Officer\nI: Requester"| F
-    C -.-> |"R: Emergency CAB\nA: CAB Chair\nC: CISO / SOX Officer\nI: Change Manager"| C
-    J -.-> |"R: Implementation Team\nA: Change Manager\nC: QA / SOX Officer\nI: CAB Chair"| J
-    L -.-> |"R: Change Analyst\nA: Change Manager\nC: SOX Compliance Officer\nI: Stakeholders"| L
-    M -.-> |"R: Incident Manager\nA: Change Manager\nC: SOX Compliance Officer\nI: CAB Chair"| M
-
-    %% Styling
-    style A2 fill:#FF6B6B,color:#fff
-    style G1 fill:#FF6B6B,color:#fff
-    style L1 fill:#FF6B6B,color:#fff
-    style A1 fill:#4ECDC4,color:#fff
-    style C1 fill:#4ECDC4,color:#fff
-    style D1 fill:#4ECDC4,color:#fff
-    style H1 fill:#4ECDC4,color:#fff
-    style L2 fill:#4ECDC4,color:#fff
-    style M1 fill:#4ECDC4,color:#fff
+%% ════════════════════════════════════════════════════════
+%% CLAUDE'S CHANGE INTERPRETATION
+%% ════════════════════════════════════════════════════════
+%% OBJECTIVE: Ensure failed implementations are safely reversed using a structured backout plan before escalating to incident management, minimizing service disruption.
+%%
+%% EXPLANATION:
+%% Replaced the direct path from implementation failure to Incident Report with a backout plan workflow: when implementation fails, an "Execute Backout Plan" step is triggered first, followed by a decision on whether the backout succeeded. If the backout is successful, the change is documented with lessons learned and returned to the requester for rework. If the backout itself fails, it escalates to an Incident Report as before.
+%% ════════════════════════════════════════════════════════
