@@ -2,7 +2,7 @@
 
 **Transform business process diagrams with natural language. No technical knowledge required.**
 
-https://callgenix.com/process-diagram-converter.html
+https://callgenix.com
 
 ---
 
