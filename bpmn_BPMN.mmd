@@ -12,4 +12,19 @@ sequenceDiagram
     V-->>P: Order confirmation
     V->>F: Submit invoice
     F->>F: 3-way match verification
-    F-->>V: Payment processed (NET30)
+
+    %% ⚡ CHANGED SECTION
+    alt 3-way match successful
+        F-->>V: Payment processed (NET30)
+    else 3-way match failed - discrepancy found
+        F-->>P: Notify discrepancy (PO/Invoice/Receipt mismatch)
+        P->>V: Request invoice correction / clarification
+        V-->>P: Submit revised invoice or documentation
+        P->>F: Forward corrected documents
+        F->>F: Re-verify 3-way match
+        F-->>V: Payment processed (NET30)
+    end
+    %% ⚡ END CHANGED SECTION
+
+%% EXPLANATION:
+%% Added an alt/else block after the 3-way match verification step. The happy path (match successful) proceeds directly to payment. The discrepancy path notifies Procurement, who coordinates with the Vendor to obtain corrected documentation, which is then re-verified by Finance before payment is released.
