@@ -32,3 +32,4 @@ DEMO,012,Added a Finance Impact decision gate after CAB app…,DRAWIO,2026-06-29
 FINOP,010,Added a Sales Manager participant as the escalatio…,JPEG,2026-06-29 18:04,210129620536
 PROCM,006,Wrapped the existing payment step in an alt/else b…,BPMN,2026-06-29 18:08,cb0faedf6351
 PROCM,007,Replaced the single payment step with an alt/else…,BPMN,2026-06-29 18:13,aef058c0ae72
+PROCM,008,Added an alt/else block after the 3-way match veri…,BPMN,2026-06-29 18:45,abe1dff1a2a9
