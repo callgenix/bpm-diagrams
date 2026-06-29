@@ -31,3 +31,4 @@ PROCM,005,Added an IT Provisioning participant and a risk as…,BPMN,2026-06-29 
 DEMO,012,Added a Finance Impact decision gate after CAB app…,DRAWIO,2026-06-29 17:58,df89c68e9435
 FINOP,010,Added a Sales Manager participant as the escalatio…,JPEG,2026-06-29 18:04,210129620536
 PROCM,006,Wrapped the existing payment step in an alt/else b…,BPMN,2026-06-29 18:08,cb0faedf6351
+PROCM,007,Replaced the single payment step with an alt/else…,BPMN,2026-06-29 18:13,aef058c0ae72
