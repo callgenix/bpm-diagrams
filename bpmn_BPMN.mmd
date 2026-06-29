@@ -5,9 +5,9 @@ sequenceDiagram
     participant P as Procurement
     participant V as Vendor
     participant F as Finance
+    participant IT as IT Provisioning
 
     R->>M: Submit purchase request
-    %% ⚡ CHANGED SECTION - Added 48-hour escalation path for manager approval
     alt Manager approves within 48 hours
         M-->>R: PR approved
         M->>P: Forward approved PR
@@ -17,9 +17,33 @@ sequenceDiagram
         SM->>P: Forward escalated PR
         SM-->>M: Notify of escalation
     end
+
+    %% ⚡ CHANGED SECTION - Risk-based onboarding: low-risk bypasses Finance, high-risk requires Finance review
+    P->>P: Assess customer risk (credit score, company verification, history)
+    alt Low-Risk (credit >750, verified company, clean history)
+        P-->>R: Low-risk classification confirmed
+        P->>V: Issue Purchase Order
+        V-->>P: Order confirmation
+        P->>IT: Direct IT provisioning (Finance bypass)
+        IT-->>R: Resources provisioned
+        V->>F: Submit invoice
+        F->>F: 3-way match verification
+        F-->>V: Payment processed (NET30)
+    else High-Risk (standard approval path)
+        P->>F: Submit for Finance review
+        F->>F: Conduct risk & financial review
+        alt Finance approves
+            F-->>P: Finance approval granted
+            P->>V: Issue Purchase Order
+            V-->>P: Order confirmation
+            P->>IT: IT provisioning (post-Finance approval)
+            IT-->>R: Resources provisioned
+            V->>F: Submit invoice
+            F->>F: 3-way match verification
+            F-->>V: Payment processed (NET30)
+        else Finance rejects
+            F-->>P: Finance approval denied
+            P-->>R: Request rejected (high-risk)
+        end
+    end
     %% ⚡ END CHANGED SECTION
-    P->>V: Issue Purchase Order
-    V-->>P: Order confirmation
-    V->>F: Submit invoice
-    F->>F: 3-way match verification
-    F-->>V: Payment processed (NET30)
