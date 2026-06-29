@@ -26,3 +26,4 @@ FINOP,008,Added a risk assessment step performed by the Sale…,JPEG,2026-06-29 
 PROCM,002,Added an alt/else block after the 3-way match veri…,BPMN,2026-06-29 17:26,1ae5ef3a42d3
 PROCM,003,Added Finance Manager (FM) and Internal Audit (IA)…,BPMN,2026-06-29 17:28,a93a668c3bcf
 FINOP,009,Added a Sales Manager participant as the escalatio…,JPEG,2026-06-29 17:44,3ba76a952f5e
+PROCM,004,Added a Senior Manager participant and an alt/else…,BPMN,2026-06-29 17:51,889f4e70b4fe
