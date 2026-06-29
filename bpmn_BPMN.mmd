@@ -4,6 +4,8 @@ sequenceDiagram
     participant P as Procurement
     participant V as Vendor
     participant F as Finance
+    participant FM as Finance Manager
+    participant IA as Internal Audit
 
     R->>M: Submit purchase request
     M-->>R: PR approved
@@ -17,11 +19,50 @@ sequenceDiagram
     alt 3-way match successful
         F-->>V: Payment processed (NET30)
     else 3-way match failed (discrepancy found)
-        F-->>P: Notify discrepancy details
+        F->>F: Classify root cause (typo / short shipment / price variance / tax code error)
+        F-->>P: Notify discrepancy details + root cause
         P->>V: Request clarification / corrected invoice
-        V-->>P: Submit corrected invoice / documentation
-        P->>F: Forward resolved documentation
-        F->>F: Re-verify 3-way match
-        F-->>V: Payment processed (NET30)
+
+        alt Resolved within 7 days
+            V-->>P: Submit corrected invoice / documentation
+            P->>F: Forward resolved documentation
+            F->>F: Re-verify 3-way match
+            F-->>V: Payment processed (NET30)
+        else Unresolved > 7 days
+            loop Daily alerts until resolved or escalated
+                F-->>FM: ⚠️ Daily alert: Invoice discrepancy unresolved (Day 7+)
+            end
+
+            alt Resolved before 14 days
+                V-->>P: Submit corrected invoice / documentation
+                P->>F: Forward resolved documentation
+                F->>F: Re-verify 3-way match
+                F-->>V: Payment processed (NET30)
+            else Unresolved > 14 days
+                FM->>F: Auto-place hold on vendor's next 3 invoices
+                F-->>V: Notify invoice hold applied (next 3 invoices)
+
+                alt Resolved before 30 days
+                    V-->>P: Submit corrected invoice / documentation
+                    P->>F: Forward resolved documentation
+                    F->>F: Re-verify 3-way match
+                    FM->>F: Release invoice hold
+                    F-->>V: Payment processed (NET30)
+                else Unresolved > 30 days
+                    FM->>IA: Trigger formal supplier audit
+                    IA->>V: Conduct supplier audit
+                    IA-->>FM: Audit findings report
+                    FM-->>P: Escalation summary + audit results
+                    V-->>P: Submit corrected invoice / documentation
+                    P->>F: Forward resolved documentation
+                    F->>F: Re-verify 3-way match
+                    FM->>F: Release invoice hold (if audit cleared)
+                    F-->>V: Payment processed (NET30)
+                end
+            end
+        end
+
+        F->>P: Log root cause to monthly supplier discrepancy report
+        P->>P: Monthly review: Analyze systemic supplier issues & corrective actions
     end
     %% ⚡ END CHANGED SECTION
