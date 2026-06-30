@@ -4,8 +4,6 @@ sequenceDiagram
     participant P as Procurement
     participant V as Vendor
     participant F as Finance
-    participant FM as Finance Manager
-    participant IA as Internal Audit
 
     R->>M: Submit purchase request
     M-->>R: PR approved
@@ -18,55 +16,15 @@ sequenceDiagram
     %% ⚡ CHANGED SECTION
     alt 3-way match successful
         F-->>V: Payment processed (NET30)
-    else 3-way match failed (discrepancy found)
-        F->>F: Classify root cause (typo / short shipment / price variance / tax code error)
-        F->>F: Log discrepancy with root cause to Monthly Supplier Report
-        F-->>P: Notify discrepancy details + root cause
-        P->>V: Request clarification / corrected invoice
-
-        alt Resolved within 7 days
-            V-->>P: Submit corrected invoice / documentation
-            P->>F: Forward resolved documentation
-            F->>F: Re-verify 3-way match
-            F-->>V: Payment processed (NET30)
-        else Unresolved > 7 days
-            F->>FM: Daily alert: unresolved discrepancy (Day 7+)
-            FM-->>P: Escalation notice to expedite resolution
-
-            alt Resolved before 14 days
-                V-->>P: Submit corrected invoice / documentation
-                P->>F: Forward resolved documentation
-                F->>F: Re-verify 3-way match
-                F-->>V: Payment processed (NET30)
-            else Unresolved > 14 days
-                F->>F: Auto-place hold on vendor's next 3 invoices
-                F-->>V: Notify invoice hold applied
-                FM-->>P: Escalation: vendor invoices on hold
-
-                alt Resolved before 30 days
-                    V-->>P: Submit corrected invoice / documentation
-                    P->>F: Forward resolved documentation
-                    F->>F: Re-verify 3-way match
-                    F->>F: Release invoice hold upon resolution
-                    F-->>V: Payment processed (NET30)
-                else Unresolved > 30 days
-                    F->>IA: Trigger formal supplier audit
-                    IA->>V: Conduct supplier audit
-                    IA-->>F: Audit findings report
-                    IA-->>P: Audit findings report
-                    V-->>P: Submit corrected invoice / documentation (post-audit)
-                    P->>F: Forward resolved documentation
-                    F->>F: Re-verify 3-way match
-                    F->>F: Release invoice hold upon resolution
-                    F-->>V: Payment processed (NET30)
-                end
-            end
-        end
-
-        F->>P: Feed root cause data to Monthly Supplier Discrepancy Report
-        P->>P: Review systemic supplier issues & corrective actions
+    else 3-way match failed - discrepancy found
+        F-->>P: Notify discrepancy (PO/Invoice/GR mismatch)
+        P->>V: Request invoice correction / clarification
+        V-->>P: Submit revised invoice
+        P->>F: Forward corrected invoice
+        F->>F: Re-verify 3-way match
+        F-->>V: Payment processed (NET30)
     end
     %% ⚡ END CHANGED SECTION
 
 %% EXPLANATION:
-%% Added Finance Manager (FM) and Internal Audit (IA) as participants. Restructured the discrepancy path into nested time-based escalation tiers: daily FM alerts after 7 days, automatic hold on vendor's next 3 invoices after 14 days, and a formal supplier audit trigger after 30 days. At each tier, resolution can still occur and releases any holds. Added root cause classification (typo, short shipment, price variance, tax code error) immediately upon discrepancy detection, with the data feeding into a monthly supplier discrepancy report for Procurement to review and address systemic issues.
+%% Replaced the single payment step with an alt/else block after the 3-way match verification. The happy path proceeds directly to payment. The discrepancy path notifies Procurement, who contacts the Vendor for a corrected invoice; the revised invoice is then re-verified by Finance before payment is released.
