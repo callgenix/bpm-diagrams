@@ -1,30 +1,65 @@
 sequenceDiagram
     participant C as Customer
-    participant S as Sales Team
-    participant F as Finance
-    participant IT as IT Ops
+    participant S as Sales Team (R-Request, A-Onboarding)
+    participant CO as Compliance Officer (A-SOX Controls)
+    participant F as Finance (R-Credit/Risk, A-Approval)
+    participant IT as IT Ops (R-Provisioning)
 
     C->>S: Submit onboarding request
+
+    %% ⚡ CHANGED SECTION - Documentation Gate 1: Request Intake
+    Note over C,S: 📋 DOC GATE 1: Request logged in CRM<br/>(SOX Control: Audit Trail Initiated)
+    S->>CO: Submit onboarding for compliance pre-screen
+    CO->>CO: SOX Checkpoint 1: Verify customer identity & KYC docs
+    CO-->>S: Compliance pre-screen passed (documented)
+    Note over CO: RACI: Responsible=CO, Accountable=CO,<br/>Consulted=F, Informed=S
+    %% ⚡ END CHANGED SECTION
+
     S->>F: Credit check request
 
-    %% ⚡ CHANGED SECTION - Risk assessment and expedited path
+    %% ⚡ CHANGED SECTION - Risk assessment with SOX controls and expedited path
     F->>F: Risk Assessment (Score >750, Verified Company, Clean Payment History)
+    Note over F: RACI: Responsible=F, Accountable=F,<br/>Consulted=CO, Informed=S
+
+    Note over F: 📋 DOC GATE 2: Risk assessment results<br/>recorded (SOX Control: Segregation of Duties)
 
     alt Low-Risk Customer (All criteria met)
+        F->>CO: Submit auto-approval for SOX compliance review
+        CO->>CO: SOX Checkpoint 2: Validate risk scoring methodology & thresholds
+        CO-->>F: SOX controls verified — auto-approval authorized
+        Note over CO,F: 📋 DOC GATE 3: Auto-approval justification<br/>& compliance sign-off archived
         F-->>S: Auto-Approved (Expedited - No Director Review)
+        Note over F,S: RACI: Responsible=F, Accountable=CO,<br/>Consulted=S, Informed=IT
         S->>IT: Provision accounts (expedited path)
         IT-->>C: Welcome email + credentials (within 24h)
     else High-Risk Customer (Any criteria failed)
         F->>F: Escalate to Finance Director
+        F->>CO: Submit escalation for SOX compliance review
+        CO->>CO: SOX Checkpoint 2: Validate escalation rationale & director authority
+        CO-->>F: SOX controls verified — director review authorized
+        Note over CO,F: 📋 DOC GATE 3: Escalation justification<br/>& compliance sign-off archived
         F-->>S: Director Approval (24h SLA)
+        Note over F,S: RACI: Responsible=F, Accountable=Finance Director,<br/>Consulted=CO, Informed=S
         S->>IT: Provision accounts (standard path)
         IT-->>C: Welcome email + credentials
     end
     %% ⚡ END CHANGED SECTION
 
+    %% ⚡ CHANGED SECTION - Post-provisioning SOX checkpoint and final documentation
+    IT->>CO: Notify: accounts provisioned
+    CO->>CO: SOX Checkpoint 3: Verify access controls & least-privilege compliance
+    Note over CO,IT: 📋 DOC GATE 4: Provisioning audit log<br/>& access review recorded
+
     C->>IT: First login confirmation
     IT->>S: Onboarding complete
+
+    Note over S,IT: 📋 DOC GATE 5: Onboarding completion<br/>checklist signed off (SOX Control: Process Closure)
+    Note over CO: RACI: Responsible=IT, Accountable=S,<br/>Consulted=CO, Informed=C
+
     S->>C: Kickoff meeting scheduled
+    CO->>CO: SOX Final Review: Archive full onboarding audit package
+    Note over CO: Retention: 7 years per SOX §802
+    %% ⚡ END CHANGED SECTION
 
 %% EXPLANATION:
-%% Replaced the single Finance approval step with a risk assessment decision point that evaluates three criteria (credit score >750, verified company status, clean payment history). Added an alt/else block: low-risk customers matching all criteria bypass Finance Director review and proceed directly to expedited account provisioning, while high-risk customers follow the existing escalation path through Finance Director approval with the 24h SLA.
+%% Added a Compliance Officer participant who performs three SOX checkpoints: (1) KYC/identity pre-screen before credit check, (2) validation of risk scoring or escalation rationale within both alt paths, and (3) post-provisioning access control review. Five documentation gates (DOC GATE 1–5) are placed at request intake, risk assessment recording, approval/escalation justification, provisioning audit logging, and onboarding closure. RACI labels are annotated at each major decision point identifying Responsible, Accountable, Consulted, and Informed roles. The original risk-based routing logic (credit score >750, verified company, clean payment history) and expedited/standard paths are fully preserved.
