@@ -1,32 +1,32 @@
 sequenceDiagram
     participant C as Customer
     participant S as Sales Team
-    participant M as Sales Manager
     participant F as Finance
+    participant FD as Finance Director
     participant IT as IT Ops
 
     C->>S: Submit onboarding request
     S->>F: Credit check request
-    F-->>S: Approval (24h SLA)
 
-    %% ⚡ CHANGED SECTION
-    alt Approval received within 24h
-        S->>IT: Provision accounts
-    else No approval after 48h
-        S->>M: Escalate stalled approval
-        M->>F: Escalation: urgent credit check follow-up
-        F-->>M: Expedited approval / rejection
-        alt Approved
-            M->>S: Approval confirmed
-            S->>IT: Provision accounts
-        else Rejected
-            M->>S: Rejection confirmed
-            S->>C: Onboarding denied notification
-        end
+    %% ⚡ CHANGED SECTION - Risk assessment and expedited path
+    F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
+
+    alt Low-Risk (Score >750 + Verified + No Issues) — Expedited Path
+        F-->>S: Auto-Approved (bypass FD review)
+        S->>IT: Provision accounts (expedited)
+        IT-->>C: Welcome email + credentials (within 24h)
+    else High-Risk — Standard Approval Path
+        F->>FD: Escalate for Finance Director approval
+        FD-->>F: Approval decision (24h SLA)
+        F-->>S: Approval forwarded
+        S->>IT: Provision accounts (standard)
+        IT-->>C: Welcome email + credentials
     end
-    %% END CHANGED SECTION
+    %% ⚡ END CHANGED SECTION
 
-    IT-->>C: Welcome email + credentials
     C->>IT: First login confirmation
     IT->>S: Onboarding complete
     S->>C: Kickoff meeting scheduled
+
+%% EXPLANATION:
+%% Added a Finance Director (FD) participant and a risk assessment step after the credit check. An alt/else block now splits the flow: low-risk customers (credit score >750, verified company status, clean payment history) are auto-approved and proceed directly to expedited account provisioning, while high-risk customers are escalated to the Finance Director for manual approval before provisioning continues through the standard path.
