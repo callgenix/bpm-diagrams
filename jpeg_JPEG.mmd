@@ -2,24 +2,22 @@ sequenceDiagram
     participant C as Customer
     participant S as Sales Team
     participant F as Finance
-    participant FD as Finance Director
     participant IT as IT Ops
 
     C->>S: Submit onboarding request
     S->>F: Credit check request
 
     %% ⚡ CHANGED SECTION - Risk assessment and expedited path
-    F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
+    F->>F: Risk Assessment (Score >750, Verified Company, Clean Payment History)
 
-    alt Low-Risk (Score >750 + Verified + No Issues) — Expedited Path
-        F-->>S: Auto-Approved (bypass FD review)
-        S->>IT: Provision accounts (expedited)
+    alt Low-Risk Customer (All criteria met)
+        F-->>S: Auto-Approved (Expedited - No Director Review)
+        S->>IT: Provision accounts (expedited path)
         IT-->>C: Welcome email + credentials (within 24h)
-    else High-Risk — Standard Approval Path
-        F->>FD: Escalate for Finance Director approval
-        FD-->>F: Approval decision (24h SLA)
-        F-->>S: Approval forwarded
-        S->>IT: Provision accounts (standard)
+    else High-Risk Customer (Any criteria failed)
+        F->>F: Escalate to Finance Director
+        F-->>S: Director Approval (24h SLA)
+        S->>IT: Provision accounts (standard path)
         IT-->>C: Welcome email + credentials
     end
     %% ⚡ END CHANGED SECTION
@@ -29,4 +27,4 @@ sequenceDiagram
     S->>C: Kickoff meeting scheduled
 
 %% EXPLANATION:
-%% Added a Finance Director (FD) participant and a risk assessment step after the credit check. An alt/else block now splits the flow: low-risk customers (credit score >750, verified company status, clean payment history) are auto-approved and proceed directly to expedited account provisioning, while high-risk customers are escalated to the Finance Director for manual approval before provisioning continues through the standard path.
+%% Replaced the single Finance approval step with a risk assessment decision point that evaluates three criteria (credit score >750, verified company status, clean payment history). Added an alt/else block: low-risk customers matching all criteria bypass Finance Director review and proceed directly to expedited account provisioning, while high-risk customers follow the existing escalation path through Finance Director approval with the 24h SLA.
