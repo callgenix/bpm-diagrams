@@ -1,21 +1,54 @@
 sequenceDiagram
-    participant C as Customer
-    participant S as MKT Sales Team
-    participant F as Finance
-    participant FD as Finance Director
-    participant IT as IT Ops
+    participant C as Customer<br/>(Informed)
+    participant S as MKT Sales Team<br/>(Responsible)
+    participant CO as Compliance Officer<br/>(Accountable)
+    participant F as Finance<br/>(Responsible)
+    participant FD as Finance Director<br/>(Accountable)
+    participant IT as IT Ops<br/>(Consulted)
 
     C->>S: Submit onboarding request
+
+    %% ⚡ CHANGED SECTION - Documentation Gate 1: Request Intake
+    Note over S: 📋 DOC GATE 1:<br/>Log request in CRM,<br/>capture KYC documents,<br/>timestamp receipt
+    S->>CO: Submit for initial compliance screening
+    CO->>CO: SOX Control 1: Verify segregation of duties & requestor authorization
+    CO-->>S: Compliance pre-clearance (or flag deficiencies)
+    %% ⚡ END CHANGED SECTION
+
     S->>F: Credit check request
-    %% ⚡ CHANGED SECTION - Risk assessment decision point
+
+    %% ⚡ CHANGED SECTION - Risk assessment with SOX controls & documentation gates
     F->>F: Risk Assessment: Check credit score, company status, payment history
+
+    %% ⚡ CHANGED SECTION - Documentation Gate 2: Risk Assessment Record
+    Note over F: 📋 DOC GATE 2:<br/>Record risk score,<br/>assessment criteria,<br/>assessor identity & timestamp
+
+    F->>CO: Submit risk assessment for SOX compliance review
+    CO->>CO: SOX Control 2: Validate risk methodology, verify data sources, check for conflicts of interest
+    CO-->>F: Compliance sign-off on risk assessment
 
     alt Low-Risk (Score >750 AND Verified Company AND Clean Payment History)
         F-->>S: Auto-Approved - Low Risk (Bypass Director)
+
+        %% ⚡ CHANGED SECTION - SOX Control for auto-approval
+        Note over F,CO: 📋 DOC GATE 3a:<br/>Log auto-approval rationale,<br/>attach compliance sign-off,<br/>retain audit trail
+        F->>CO: Notify: auto-approval executed
+        CO->>CO: SOX Control 3: Verify auto-approval within delegated authority limits
+        CO-->>F: Auto-approval audit logged
+        %% ⚡ END CHANGED SECTION
+
         S->>IT: Provision accounts (expedited)
         IT-->>C: Welcome email + credentials (within 24h)
     else High-Risk (Score ≤750 OR Unverified OR Payment Issues)
         F->>FD: Escalate for Director approval
+
+        %% ⚡ CHANGED SECTION - SOX Control for Director review
+        Note over FD,CO: 📋 DOC GATE 3b:<br/>Director documents<br/>review rationale,<br/>risk acceptance/rejection basis
+        FD->>CO: Submit decision for compliance validation
+        CO->>CO: SOX Control 4: Verify Director authority level, check approval threshold compliance
+        CO-->>FD: Compliance validated
+        %% ⚡ END CHANGED SECTION
+
         FD-->>F: Director decision (24h SLA)
         alt Approved by Director
             F-->>S: Approval (Director reviewed)
@@ -23,14 +56,27 @@ sequenceDiagram
             IT-->>C: Welcome email + credentials
         else Rejected by Director
             F-->>S: Rejection with reasons
+
+            %% ⚡ CHANGED SECTION - Documentation Gate for rejection
+            Note over S: 📋 DOC GATE 4:<br/>Log rejection reasons,<br/>retain for dispute/audit
+            %% ⚡ END CHANGED SECTION
+
             S->>C: Onboarding declined notification
         end
     end
-    %% ⚡ END CHANGED SECTION
 
     C->>IT: First login confirmation
     IT->>S: Onboarding complete
+
+    %% ⚡ CHANGED SECTION - Final compliance checkpoint & documentation gate
+    S->>CO: Submit completed onboarding for final compliance review
+    CO->>CO: SOX Control 5: End-to-end audit trail review, verify all doc gates passed, confirm RACI adherence
+    Note over CO: 📋 DOC GATE 5 (FINAL):<br/>Archive complete onboarding<br/>package: all approvals,<br/>risk assessments, compliance<br/>sign-offs, access grants
+    CO-->>S: Final compliance certification issued
+    Note over C,IT: RACI Summary:<br/>R=Sales,Finance | A=Compliance,FD<br/>C=IT | I=Customer
+    %% ⚡ END CHANGED SECTION
+
     S->>C: Kickoff meeting scheduled
 
 %% EXPLANATION:
-%% Added a Finance Director (FD) participant and inserted a risk assessment decision point after the credit check. Low-risk customers (credit score >750, verified company, clean payment history) bypass Director approval and proceed directly to expedited account provisioning. High-risk customers are escalated to the Finance Director for review, with an additional approved/rejected branch to handle both outcomes. This creates two distinct onboarding paths based on risk profile.
+%% Added a Compliance Officer (CO) participant labeled as Accountable in the RACI framework, and labeled all existing participants with their RACI roles (Responsible, Accountable, Consulted, Informed). Inserted five SOX control checkpoints: (1) segregation of duties verification at intake, (2) risk methodology validation after credit assessment, (3a/3b) authority-level verification for both auto-approvals and Director decisions, and (5) end-to-end audit trail review at completion. Added five corresponding documentation gates (marked with 📋) requiring formal logging of request intake, risk assessment records, approval/rejection rationale, and a final archived onboarding package. A RACI summary note was added at the end for quick reference.
