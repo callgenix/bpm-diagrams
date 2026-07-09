@@ -1,30 +1,30 @@
 sequenceDiagram
     participant R as Requester
     participant M as Manager
+    participant FD as Finance Director
     participant P as Procurement
     participant V as Vendor
     participant F as Finance
 
     R->>M: Submit purchase request
     M-->>R: PR approved
-    M->>P: Forward approved PR
+
+    %% ⚡ CHANGED SECTION - SOX spend threshold control point
+    alt Amount > $50,000 (SOX Control: Segregation of Duties)
+        M->>FD: Route for second approval (threshold exceeded)
+        FD->>FD: Review spend justification & budget
+        FD-->>M: Second approval granted
+        M->>P: Forward approved PR (Manager + Finance Director approved)
+    else Amount ≤ $50,000
+        M->>P: Forward approved PR (Manager approved)
+    end
+    %% ⚡ END CHANGED SECTION
+
     P->>V: Issue Purchase Order
     V-->>P: Order confirmation
     V->>F: Submit invoice
     F->>F: 3-way match verification
-
-    %% ⚡ CHANGED SECTION
-    alt 3-way match successful
-        F-->>V: Payment processed (NET30)
-    else 3-way match failed - discrepancy found
-        F-->>P: Notify discrepancy (PO/Invoice/GR mismatch)
-        P->>V: Request invoice correction / clarification
-        V-->>P: Submit revised invoice
-        P->>F: Forward corrected invoice
-        F->>F: Re-verify 3-way match
-        F-->>V: Payment processed (NET30)
-    end
-    %% ⚡ END CHANGED SECTION
+    F-->>V: Payment processed (NET30)
 
 %% EXPLANATION:
-%% Replaced the single payment step with an alt/else block after the 3-way match verification. The happy path proceeds directly to payment. The discrepancy path notifies Procurement, who contacts the Vendor for a corrected invoice; the revised invoice is then re-verified by Finance before payment is released.
+%% Added a Finance Director participant and an alt/else branch immediately after Manager approval. Purchases over $50,000 are routed to the Finance Director for a second approval before reaching Procurement, while purchases at or under $50,000 continue directly to Procurement. The threshold value and SOX rationale are explicitly labeled in the diagram so auditors can clearly identify the control point.
