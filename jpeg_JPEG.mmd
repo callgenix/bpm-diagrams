@@ -1,64 +1,30 @@
 sequenceDiagram
-    participant CO as Compliance Officer
     participant C as Customer
     participant S as Sales Team
     participant F as Finance
     participant IT as IT Ops
 
-    %% ⚡ CHANGED SECTION - Request intake documentation & identity pre-screening
     C->>S: Submit onboarding request
-    Note over C,S: 📄 DOC-1: Request Intake Record<br/>(timestamp, customer ID, channel)
-    S->>CO: Identity pre-screening request
-    CO->>CO: Identity Pre-Screening<br/>(KYC/AML checks, sanctions list)
-    Note over CO: RACI – Identity Pre-Screening<br/>R: Compliance Officer<br/>A: Compliance Officer<br/>C: Sales Team<br/>I: Finance
-    CO-->>S: Identity pre-screening cleared
-    %% ⚡ END CHANGED SECTION
-
     S->>F: Credit check request
 
-    %% ⚡ CHANGED SECTION - Risk assessment with compliance validation & documentation
+    %% ⚡ CHANGED SECTION - Risk assessment decision after credit check
     F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
-    Note over F: 📄 DOC-2: Risk Assessment Record<br/>(score, criteria, data sources, timestamp)
-    F->>CO: Risk scoring output for validation
-    CO->>CO: Validate Risk Scoring Output<br/>(methodology review, data integrity check)
-    Note over CO: RACI – Risk Score Validation<br/>R: Compliance Officer<br/>A: Compliance Officer<br/>C: Finance<br/>I: Sales Team
-    CO-->>F: Risk scoring validated
 
-    alt Low-Risk (all criteria met) - Expedited Path
-        Note over F,S: RACI – Auto-Approval Decision<br/>R: Finance<br/>A: Finance<br/>C: Compliance Officer<br/>I: Sales Team, IT Ops
-        F-->>S: Auto-approved (low-risk bypass)
-        Note over F,S: 📄 DOC-3: Approval Justification<br/>(auto-approve rationale, risk score, policy ref)
+    alt Low-Risk (all criteria met) — Expedited Path
+        F-->>S: Auto-approved (low-risk, no director approval needed)
         S->>IT: Provision accounts (expedited)
-        IT->>CO: Access control review request
-        CO->>CO: Access Control Review<br/>(least-privilege check, role assignment audit)
-        Note over CO: RACI – Access Control Review<br/>R: Compliance Officer<br/>A: Compliance Officer<br/>C: IT Ops<br/>I: Sales Team
-        CO-->>IT: Access control approved
-        Note over IT,CO: 📄 DOC-4: Audit Log<br/>(provisioned resources, permissions, reviewer, timestamp)
         IT-->>C: Welcome email + credentials (within 24h)
-    else High-Risk - Standard Path
-        F->>F: Route to Finance Director for approval
-        Note over F: RACI – Finance Director Approval<br/>R: Finance Director<br/>A: Finance<br/>C: Compliance Officer<br/>I: Sales Team
+    else High-Risk — Standard Path
+        F->>F: Escalate to Finance Director
         F-->>S: Finance Director Approval (24h SLA)
-        Note over F,S: 📄 DOC-3: Approval Justification<br/>(director sign-off, conditions, risk factors)
         S->>IT: Provision accounts
-        IT->>CO: Access control review request
-        CO->>CO: Access Control Review<br/>(least-privilege check, role assignment audit)
-        Note over CO: RACI – Access Control Review<br/>R: Compliance Officer<br/>A: Compliance Officer<br/>C: IT Ops<br/>I: Sales Team
-        CO-->>IT: Access control approved
-        Note over IT,CO: 📄 DOC-4: Audit Log<br/>(provisioned resources, permissions, reviewer, timestamp)
         IT-->>C: Welcome email + credentials
     end
     %% ⚡ END CHANGED SECTION
 
     C->>IT: First login confirmation
     IT->>S: Onboarding complete
-
-    %% ⚡ CHANGED SECTION - Closure documentation
     S->>C: Kickoff meeting scheduled
-    Note over S,CO: 📄 DOC-5: Closure Record<br/>(onboarding summary, all checkpoint sign-offs,<br/>compliance attestation, final timestamp)
-    S->>CO: Closure attestation request
-    CO-->>S: SOX compliance attestation confirmed
-    %% ⚡ END CHANGED SECTION
 
 %% EXPLANATION:
-%% Added Compliance Officer as a new participant at the top of the diagram. Introduced three compliance checkpoints: (1) Identity Pre-Screening before the credit check with KYC/AML verification, (2) Risk Scoring Validation after Finance completes the risk assessment but before the routing decision, and (3) Access Control Review after account provisioning in both the expedited and standard paths. Five documentation gates are attached as Notes (not inline flow-blocking nodes): DOC-1 at request intake, DOC-2 at risk assessment output, DOC-3 at approval justification (in both alt branches), DOC-4 as audit logs after provisioning (both branches), and DOC-5 as a closure record after kickoff scheduling. Every major decision point carries a RACI annotation identifying Responsible, Accountable, Consulted, and Informed parties. All original business logic including the risk-based alt/else routing, expedited path, and post-provisioning steps remains completely intact.
+%% Added a risk assessment step within Finance after the credit check request. Introduced an alt/else block: low-risk customers (score >750, verified company, clean payment history) receive automatic approval and proceed directly to expedited account provisioning, while high-risk customers follow the existing path through Finance Director approval before provisioning. All downstream steps (first login confirmation, onboarding complete, kickoff scheduling) remain shared across both paths.
