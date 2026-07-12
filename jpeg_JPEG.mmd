@@ -6,25 +6,22 @@ sequenceDiagram
 
     C->>S: Submit onboarding request
     S->>F: Credit check request
-
-    %% ⚡ CHANGED SECTION - Risk assessment decision after credit check
-    F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
-
-    alt Low-Risk (all criteria met) — Expedited Path
+    %% ⚡ CHANGED SECTION - Risk assessment and expedited path
+    F->>F: Risk Assessment (Score>750, Verified Co., Clean History?)
+    alt Low-Risk (all criteria met) - Expedited Path
         F-->>S: Auto-approved (low-risk, no director approval needed)
         S->>IT: Provision accounts (expedited)
         IT-->>C: Welcome email + credentials (within 24h)
-    else High-Risk — Standard Path
+    else High-Risk (any criterion fails) - Standard Path
         F->>F: Escalate to Finance Director
-        F-->>S: Finance Director Approval (24h SLA)
-        S->>IT: Provision accounts
+        F-->>S: Director Approval (24h SLA)
+        S->>IT: Provision accounts (standard)
         IT-->>C: Welcome email + credentials
     end
     %% ⚡ END CHANGED SECTION
-
     C->>IT: First login confirmation
     IT->>S: Onboarding complete
     S->>C: Kickoff meeting scheduled
 
 %% EXPLANATION:
-%% Added a risk assessment step within Finance after the credit check request. Introduced an alt/else block: low-risk customers (score >750, verified company, clean payment history) receive automatic approval and proceed directly to expedited account provisioning, while high-risk customers follow the existing path through Finance Director approval before provisioning. All downstream steps (first login confirmation, onboarding complete, kickoff scheduling) remain shared across both paths.
+%% Added a risk assessment step within Finance after the credit check request. An alt/else block splits the flow: low-risk customers (credit score >750, verified company status, no payment history issues) receive automatic approval and proceed directly to expedited account provisioning, while high-risk customers are escalated to the Finance Director for approval under the existing 24h SLA before standard provisioning. Both paths converge at the customer's first login confirmation.
