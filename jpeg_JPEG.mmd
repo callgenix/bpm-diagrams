@@ -1,71 +1,32 @@
 sequenceDiagram
     participant C as Customer
     participant S as Sales Team
-    participant CO as Compliance Officer
     participant F as Finance
     participant IT as IT Ops
 
-    %% ⚡ CHANGED SECTION - RACI annotations updated with full R/A/C/I labels
-    note over S: RACI: Responsible for<br/>onboarding orchestration<br/>Consulted on risk routing
-    note over F: RACI: Accountable for<br/>credit & financial controls<br/>Responsible for risk scoring
-    note over CO: RACI: Accountable for<br/>SOX compliance & audit<br/>Consulted on all gates
-    note over IT: RACI: Responsible for<br/>provisioning & access<br/>Informed on compliance status
-    note over C: RACI: Informed throughout<br/>onboarding lifecycle
-
     C->>S: Submit onboarding request
-
-    %% ⚡ CHANGED SECTION - Documentation Gate #1: Request Intake
-    note right of S: 📄 Doc Gate #1:<br/>Request Intake Record<br/>(timestamp, customer ID,<br/>channel, request hash)<br/>Retained for audit
-    note right of S: RACI: R=Sales, A=Compliance,<br/>C=Finance, I=Customer
-
-    %% SOX Checkpoint #1: Identity pre-screening BEFORE credit check
-    S->>CO: Submit onboarding package for SOX review
-    note right of CO: SOX Checkpoint #1:<br/>Identity pre-screening<br/>& customer due diligence<br/>(KYC/AML validation)<br/>Must complete before<br/>credit check proceeds
-    note right of CO: RACI: R=Compliance,<br/>A=Compliance, C=Sales,<br/>I=Customer
-    CO-->>S: Identity pre-screening clearance
-
     S->>F: Credit check request
 
-    %% ⚡ CHANGED SECTION - Documentation Gate #2: Risk Assessment
-    F->>F: Risk scoring & risk-based routing
-    note right of F: 📄 Doc Gate #2:<br/>Risk Assessment Record<br/>(score, model version,<br/>routing decision rationale,<br/>expedited vs standard path)<br/>Retained for audit
-    note right of F: RACI: R=Finance,<br/>A=Finance, C=Compliance,<br/>I=Sales
+    %% ⚡ CHANGED SECTION - Risk assessment decision after credit check
+    F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
 
-    %% SOX Checkpoint #2: Validation of risk scoring output
-    F->>CO: Risk scoring output for SOX validation
-    note right of CO: SOX Checkpoint #2:<br/>Risk scoring validation<br/>& routing decision review<br/>(SOX 404 financial control)<br/>Verify risk model output<br/>& confirm routing path
-    note right of CO: RACI: R=Compliance,<br/>A=Compliance, C=Finance,<br/>I=Sales
-    CO-->>F: Risk scoring validated & approved
-
-    %% ⚡ CHANGED SECTION - Documentation Gate #3: Approval Justification
-    note right of F: 📄 Doc Gate #3:<br/>Approval Justification<br/>Record (credit decision,<br/>risk tier, approval basis,<br/>any expedited path rationale)<br/>Retained for audit
-    note right of F: RACI: R=Finance,<br/>A=Compliance, C=Sales,<br/>I=Customer
-
-    F-->>S: Approval (24h SLA)
-
-    S->>IT: Provision accounts
-
-    %% ⚡ CHANGED SECTION - Documentation Gate #4: Audit Logging
-    note right of IT: 📄 Doc Gate #4:<br/>Audit Log Record<br/>(provisioned systems,<br/>permission sets, timestamps,<br/>segregation-of-duties check)<br/>Retained for audit
-    note right of IT: RACI: R=IT Ops,<br/>A=Compliance, C=Sales,<br/>I=Finance
-
-    %% SOX Checkpoint #3: Access control review after provisioning
-    IT->>CO: Access provisioning for SOX review
-    note right of CO: SOX Checkpoint #3:<br/>Access control &<br/>segregation of duties<br/>review (SOX IT GC)<br/>Post-provisioning verification
-    note right of CO: RACI: R=Compliance,<br/>A=Compliance, C=IT Ops,<br/>I=Sales
-    CO-->>IT: Access control clearance granted
-
-    IT-->>C: Welcome email + credentials
-    C->>IT: First login confirmation
-
-    %% ⚡ CHANGED SECTION - Documentation Gate #5: Closure & final evidence assembly
-    IT->>CO: Submit completed onboarding evidence
-    note right of CO: 📄 Doc Gate #5:<br/>Closure Record &<br/>SOX Compliance Onboarding<br/>Dossier (all 5 gate artifacts<br/>assembled, cross-referenced,<br/>archived with retention policy)
-    note right of CO: Documentation Gate:<br/>Final audit trail<br/>assembly & sign-off<br/>RACI: R=Compliance,<br/>A=Compliance, C=Sales/IT,<br/>I=Customer/Finance
-    CO-->>S: Compliance sign-off complete
-
-    IT->>S: Onboarding complete
-    S->>C: Kickoff meeting scheduled
+    alt Low-Risk (all criteria met) - Expedited Path
+        F-->>S: Auto-approved (low-risk, no Director approval needed)
+        S->>IT: Provision accounts
+        IT-->>C: Welcome email + credentials (within 24h)
+        C->>IT: First login confirmation
+        IT->>S: Onboarding complete
+        S->>C: Kickoff meeting scheduled
+    else High-Risk (any criterion fails) - Standard Path
+        F->>F: Escalate to Finance Director
+        F-->>S: Approval (24h SLA - Director reviewed)
+        S->>IT: Provision accounts
+        IT-->>C: Welcome email + credentials
+        C->>IT: First login confirmation
+        IT->>S: Onboarding complete
+        S->>C: Kickoff meeting scheduled
+    end
+    %% ⚡ END CHANGED SECTION
 
 %% EXPLANATION:
-%% Restructured the three SOX checkpoints to match the requested placement: (1) identity pre-screening now explicitly gates before the credit check, (2) a new risk scoring validation checkpoint was added after Finance performs risk scoring and routing—preserving the existing risk-based and expedited path logic untouched—and (3) the access control review remains post-provisioning. Five numbered documentation gates were added as note artifacts at request intake (#1), risk assessment (#2), approval justification (#3), audit logging at provisioning (#4), and closure/dossier assembly (#5), each attached to the owning participant rather than inline in the flow. Every major decision point and gate now carries a full RACI label (Responsible, Accountable, Consulted, Informed) as separate note annotations. No existing sequence flow arrows or business logic were removed or rerouted.
+%% Added a risk assessment step within Finance after the credit check request. Introduced an alt/else block: low-risk customers (score >750, verified company, clean payment history) receive automatic approval and proceed directly to account provisioning without Finance Director sign-off; high-risk customers (any criterion fails) are escalated to the Finance Director for review before provisioning continues. Both paths then follow the same downstream flow through IT provisioning, first login, and kickoff scheduling.
