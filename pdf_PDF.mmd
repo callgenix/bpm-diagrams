@@ -1,12 +1,17 @@
 flowchart TD
+    %% ⚡ CHANGED SECTION — Style definitions
+    classDef checkpoint fill:#fff3cd,stroke:#d4a017,stroke-width:2px,color:#000
+    classDef dataobj fill:#e8f4e8,stroke:#2e7d32,stroke-width:1px,stroke-dasharray:5 5,color:#000
+    classDef annotation fill:#fff,stroke:#999,stroke-width:1px,stroke-dasharray:3 3,color:#555,font-size:11px
+
     A([Strategic Sourcing]) --> B[Spend Analysis]
-    %% ⚡ CHANGED SECTION
-    B --> B1{Budget Available?}
-    B1 --> |No| B2([Process Terminated - No Budget])
-    B1 --> |Yes| C[Procurement Strategy]
-    %% ⚡ END CHANGED SECTION
+    B --> C[Procurement Strategy]
     C --> D{Sole Source?}
-    D --> |Yes| E[Draft Justification]
+
+    %% ⚡ CHANGED SECTION — COI checkpoint before Sole Source justification is accepted
+    D --> |Yes| COI_CHK
+    COI_CHK --> E[Draft Justification]
+
     D --> |No| F[Supplier Pre-Qual]
     E --> G[Legal Review]
     G --> H{Approved?}
@@ -23,19 +28,65 @@ flowchart TD
     Q --> R[Final Proposals]
     R --> S[Evaluation Panel]
     S --> T[Score]
-    T --> U{Above 75?}
+
+    %% ⚡ CHANGED SECTION — Score validation checkpoint before threshold decision
+    T --> SCORE_CHK
+    SCORE_CHK --> U{Above 75?}
+
     U --> |No| V[Reject]
     U --> |Yes| W[Due Diligence]
     J --> W
     V --> P
     W --> X[Contract]
-    X --> Y([Executed])
 
-%% ========================================================
-%% CLAUDE'S CHANGE INTERPRETATION
-%% ========================================================
-%% OBJECTIVE: Prevent procurement activities from proceeding without confirmed budget, avoiding wasted effort and unauthorized spending commitments.
-%%
+    %% ⚡ CHANGED SECTION — Access control review after contract, before ERP setup
+    X --> ERP_CHK
+    ERP_CHK --> ERP[ERP Vendor Setup]
+    ERP --> Y([Executed])
+
+    %% ⚡ CHANGED SECTION — Compliance Officer lane
+    subgraph COMP["Compliance Officer"]
+        direction TB
+        COI_CHK{{"Conflict-of-Interest & Vendor Independence Check"}}
+        SCORE_CHK{{"RFP Score Validation"}}
+        ERP_CHK{{"ERP Access Control Review"}}
+    end
+
+    %% ⚡ CHANGED SECTION — Documentation gates (data objects / artifacts)
+    DOC_SPEND>"Spend Analysis Audit Record"]
+    DOC_SOLE>"Sole Source Justification Record"]
+    DOC_SCORE>"RFP Scoring Audit Trail"]
+    DOC_DD>"Due Diligence Report"]
+    DOC_CONTRACT>"Contract Execution Record"]
+
+    B -.- DOC_SPEND
+    E -.- DOC_SOLE
+    T -.- DOC_SCORE
+    W -.- DOC_DD
+    X -.- DOC_CONTRACT
+
+    %% ⚡ CHANGED SECTION — RACI annotations on major decision points
+    RACI_D["R: Procurement Lead
+A: Category Manager
+C: Compliance Officer
+I: Finance"]
+    RACI_H["R: Legal Counsel
+A: Procurement Director
+C: Compliance Officer
+I: Category Manager"]
+    RACI_U["R: Evaluation Panel
+A: Procurement Director
+C: Compliance Officer
+I: Budget Owner"]
+
+    D -.- RACI_D
+    H -.- RACI_H
+    U -.- RACI_U
+
+    %% ⚡ CHANGED SECTION — Apply styles
+    class COI_CHK,SCORE_CHK,ERP_CHK checkpoint
+    class DOC_SPEND,DOC_SOLE,DOC_SCORE,DOC_DD,DOC_CONTRACT dataobj
+    class RACI_D,RACI_H,RACI_U annotation
+
 %% EXPLANATION:
-%% Added a "Budget Available?" decision point immediately after the Spend Analysis step. If no budget is available, the flow terminates at a "Process Terminated - No Budget" end node. If budget is confirmed, the flow continues to the Procurement Strategy step as before.
-%% ========================================================
+%% Added a Compliance Officer subgraph containing three hexagonal checkpoints: a Conflict-of-Interest & Vendor Independence Check inserted between the Sole Source decision and Draft Justification, an RFP Score Validation inserted between Score and the Above 75 threshold decision, and an ERP Access Control Review inserted between Contract execution and a new ERP Vendor Setup step before the Executed end event. Five documentation artifacts (flag-shaped data objects) were attached via dotted association lines to Spend Analysis, Draft Justification, Score, Due Diligence, and Contract execution to create an end-to-end audit trail. RACI annotation nodes were attached to all three major decision gateways (Sole Source, Approved, Above 75) with responsibility assignments. All original paths—sole source, competitive RFP, and reject-resubmit loop—remain intact and unchanged.
