@@ -7,26 +7,24 @@ sequenceDiagram
     C->>S: Submit onboarding request
     S->>F: Credit check request
 
-    %% ⚡ CHANGED SECTION - Risk assessment decision after credit check
+    %% ⚡ CHANGED SECTION - Risk assessment with expedited path for low-risk customers
     F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
 
-    alt Low-Risk (all criteria met) - Expedited Path
+    alt Low-Risk (Score >750 + Verified + No Issues) — Expedited Path
         F-->>S: Auto-approved (low-risk, no Director approval needed)
-        S->>IT: Provision accounts
+        S->>IT: Provision accounts (expedited)
         IT-->>C: Welcome email + credentials (within 24h)
-        C->>IT: First login confirmation
-        IT->>S: Onboarding complete
-        S->>C: Kickoff meeting scheduled
-    else High-Risk (any criterion fails) - Standard Path
+    else High-Risk — Standard Path
         F->>F: Escalate to Finance Director
-        F-->>S: Approval (24h SLA - Director reviewed)
-        S->>IT: Provision accounts
+        F-->>S: Director Approval (24h SLA)
+        S->>IT: Provision accounts (standard)
         IT-->>C: Welcome email + credentials
-        C->>IT: First login confirmation
-        IT->>S: Onboarding complete
-        S->>C: Kickoff meeting scheduled
     end
     %% ⚡ END CHANGED SECTION
 
+    C->>IT: First login confirmation
+    IT->>S: Onboarding complete
+    S->>C: Kickoff meeting scheduled
+
 %% EXPLANATION:
-%% Added a risk assessment step within Finance after the credit check request. Introduced an alt/else block: low-risk customers (score >750, verified company, clean payment history) receive automatic approval and proceed directly to account provisioning without Finance Director sign-off; high-risk customers (any criterion fails) are escalated to the Finance Director for review before provisioning continues. Both paths then follow the same downstream flow through IT provisioning, first login, and kickoff scheduling.
+%% Added a risk assessment step within Finance after the credit check request. An alt/else block splits the flow: low-risk customers (credit score >750, verified company status, no payment history issues) receive automatic approval and proceed directly to expedited account provisioning, bypassing Finance Director sign-off. High-risk customers are escalated to the Finance Director for approval under the existing 24h SLA before provisioning. The remainder of the onboarding flow (first login confirmation, onboarding complete, kickoff meeting) remains unchanged for both paths.
