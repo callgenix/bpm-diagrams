@@ -1,27 +1,53 @@
 sequenceDiagram
     participant C as Customer
     participant S as Sales Team
+    participant CO as Compliance Officer
     participant F as Finance
     participant IT as IT Ops
 
+    %% ⚡ CHANGED SECTION - RACI annotations via notes
+    note over S: RACI: Responsible for<br/>onboarding orchestration
+    note over F: RACI: Accountable for<br/>credit & financial controls
+    note over CO: RACI: Accountable for<br/>SOX compliance & audit
+    note over IT: RACI: Responsible for<br/>provisioning & access
+    note over C: RACI: Informed throughout<br/>onboarding lifecycle
+
     C->>S: Submit onboarding request
+
+    %% ⚡ CHANGED SECTION - SOX control: request documentation gate
+    S->>CO: Submit onboarding package for SOX review
+    note right of CO: SOX Checkpoint #1:<br/>Customer due diligence<br/>& request validation
+    CO-->>S: Due diligence clearance
+
     S->>F: Credit check request
-    %% ⚡ CHANGED SECTION - Risk assessment and expedited path
-    F->>F: Risk Assessment (Score>750, Verified Co., Clean History?)
-    alt Low-Risk (all criteria met) - Expedited Path
-        F-->>S: Auto-approved (low-risk, no director approval needed)
-        S->>IT: Provision accounts (expedited)
-        IT-->>C: Welcome email + credentials (within 24h)
-    else High-Risk (any criterion fails) - Standard Path
-        F->>F: Escalate to Finance Director
-        F-->>S: Director Approval (24h SLA)
-        S->>IT: Provision accounts (standard)
-        IT-->>C: Welcome email + credentials
-    end
-    %% ⚡ END CHANGED SECTION
+
+    %% ⚡ CHANGED SECTION - SOX control: financial approval documentation
+    F->>CO: Credit assessment for SOX sign-off
+    note right of CO: SOX Checkpoint #2:<br/>Financial control<br/>verification (SOX 404)
+    note right of F: 📄 Artifact: Credit<br/>Assessment Record<br/>(retained for audit)
+    CO-->>F: SOX financial control approved
+
+    F-->>S: Approval (24h SLA)
+
+    S->>IT: Provision accounts
+
+    %% ⚡ CHANGED SECTION - SOX control: access provisioning review
+    IT->>CO: Access provisioning for SOX review
+    note right of CO: SOX Checkpoint #3:<br/>Access control &<br/>segregation of duties<br/>review (SOX IT GC)
+    note right of IT: 📄 Artifact: Access<br/>Provisioning Log<br/>(retained for audit)
+    CO-->>IT: Access control clearance granted
+
+    IT-->>C: Welcome email + credentials
     C->>IT: First login confirmation
+
+    %% ⚡ CHANGED SECTION - Final documentation gate
+    IT->>CO: Submit completed onboarding evidence
+    note right of CO: Documentation Gate:<br/>Final audit trail<br/>assembly & sign-off
+    note right of CO: 📄 Artifact: SOX<br/>Compliance Onboarding<br/>Dossier (archived)
+    CO-->>S: Compliance sign-off complete
+
     IT->>S: Onboarding complete
     S->>C: Kickoff meeting scheduled
 
 %% EXPLANATION:
-%% Added a risk assessment step within Finance after the credit check request. An alt/else block splits the flow: low-risk customers (credit score >750, verified company status, no payment history issues) receive automatic approval and proceed directly to expedited account provisioning, while high-risk customers are escalated to the Finance Director for approval under the existing 24h SLA before standard provisioning. Both paths converge at the customer's first login confirmation.
+%% Added a Compliance Officer participant to perform three SOX checkpoints: (1) due diligence validation before credit check, (2) financial control verification after credit assessment per SOX 404, and (3) access control and segregation-of-duties review before provisioning completes. RACI annotations were added as notes over each participant to clarify accountability. Documentation artifacts (Credit Assessment Record, Access Provisioning Log, SOX Compliance Onboarding Dossier) are attached as note annotations rather than inline flow steps, preserving the main sequence while making audit trail requirements visible. A final documentation gate ensures the Compliance Officer assembles and signs off on the complete evidence package before onboarding is declared complete.
