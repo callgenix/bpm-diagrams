@@ -9,11 +9,24 @@ flowchart LR
     F --> G{Clear?}
     G --> |No| H[Fix Vulnerabilities]
     H --> F
-    %% ⚡ CHANGED SECTION
-    G --> |Yes| K[Compliance Review]
-    K --> L{Compliant?}
-    L --> |No| M[Address Compliance Issues]
-    M --> K
-    L --> |Yes| I[VP Engineering Approval]
-    %% ⚡ END CHANGED SECTION
+    G --> |Yes| I[VP Engineering Approval]
     I --> J([Production Release])
+
+    %% ⚡ CHANGED SECTION – Post-release monitoring and rollback path
+    J --> K[15-Min Automated Monitoring]
+    K --> L{Error Rate &<br>Latency OK?}
+    L --> |Breach| M[Automatic Rollback]
+    M --> N[Page On-Call Engineer]
+    N --> A
+    L --> |Healthy| O([Release Marked Stable])
+
+    classDef monitoring fill:#e0f0ff,stroke:#2980b9,stroke-width:2px
+    classDef rollback fill:#fde8e8,stroke:#c0392b,stroke-width:2px
+    classDef stable fill:#e8fde8,stroke:#27ae60,stroke-width:2px
+
+    class K,L monitoring
+    class M,N rollback
+    class O stable
+
+%% EXPLANATION:
+%% Extended the diagram past "Production Release" with a 15-minute automated monitoring window that checks error rate and latency. Added an exclusive gateway: if thresholds are breached, the flow triggers an automatic rollback followed by paging the on-call engineer (who then feeds back to Dev Complete for a fix). If metrics stay healthy, the release is marked stable and the process closes out. Applied distinct style classes for monitoring, rollback, and stable-release nodes for visual clarity.
