@@ -1,4 +1,5 @@
 PREFIX,SEQUENCE,TITLE,FORMAT,TIMESTAMP,COMMIT_HASH
-VENDM,001,Postman connectivity test Ã¢â‚¬,SEQUENCE,2026-07-12 22:16,73387b1d16ce
-RHONB,001,"Extended the diagram past ""Production Release"" witâ€¦ â€",SVG,2026-07-12 22:23,1350bbc544cb
-FINOP,001,Added a risk assessment step within Finance after… �,JPEG,2026-07-12 22:42,6623636ec6a6
+VENDM,001,Postman connectivity test ÃƒÂ¢Ã¢â€šÂ¬,SEQUENCE,2026-07-12 22:16,73387b1d16ce
+RHONB,001,"Extended the diagram past ""Production Release"" witÃ¢â‚¬Â¦ Ã¢â‚¬",SVG,2026-07-12 22:23,1350bbc544cb
+FINOP,001,Added a risk assessment step within Finance afterâ€¦ â€,JPEG,2026-07-12 22:42,6623636ec6a6
+RHONB,002,Added a Compliance Officer subgraph (lane) contain… �,PDF,2026-07-12 22:44,488495c09786
