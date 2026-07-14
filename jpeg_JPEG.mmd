@@ -11,12 +11,12 @@ sequenceDiagram
     F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
 
     alt Low-Risk (all criteria met) — Expedited Path
-        F-->>S: Auto-approved (low-risk, no director sign-off needed)
+        F-->>S: Auto-approved (low-risk, no director approval needed)
         S->>IT: Provision accounts (expedited)
         IT-->>C: Welcome email + credentials (within 24h)
     else High-Risk — Standard Path
         F->>F: Escalate to Finance Director
-        F-->>S: Director Approval (24h SLA)
+        F-->>S: Finance Director Approval (24h SLA)
         S->>IT: Provision accounts
         IT-->>C: Welcome email + credentials
     end
@@ -27,4 +27,4 @@ sequenceDiagram
     S->>C: Kickoff meeting scheduled
 
 %% EXPLANATION:
-%% Added a risk assessment step within Finance after the credit check request. Introduced an alt/else block: low-risk customers (score >750, verified company, clean payment history) receive automatic approval and proceed directly to expedited account provisioning, while high-risk customers are escalated to the Finance Director for the existing approval workflow with the 24h SLA. The post-provisioning steps (first login, onboarding complete, kickoff meeting) remain shared across both paths.
+%% Added a risk assessment step within Finance after the credit check request. Introduced an alt/else block: low-risk customers (score >750, verified company, clean payment history) receive automatic approval and proceed directly to expedited account provisioning, while high-risk customers are escalated to the Finance Director for manual approval before provisioning, preserving the original control flow. All existing post-provisioning steps (first login, onboarding complete, kickoff) remain shared across both paths.
