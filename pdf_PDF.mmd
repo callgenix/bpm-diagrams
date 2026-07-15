@@ -1,26 +1,25 @@
 flowchart TD
-    %% ⚡ CHANGED SECTION — Compliance Officer lane with three checkpoints
-    subgraph COMP["Compliance Officer"]
-        direction TB
-        CHK1{{"Conflict of Interest & Vendor Independence Review"}}
-        CHK2{{"Score Validation (SOX Control)"}}
-        CHK3{{"ERP Access Control Review"}}
-    end
+    %% ⚡ CHANGED SECTION — Style definitions
+    classDef checkpoint fill:#ff6b35,stroke:#c74a1a,color:#fff,stroke-width:2px
+    classDef dataobj fill:#e8f4fd,stroke:#2196f3,color:#333,stroke-dasharray:5 5
+    classDef annotation fill:#fffde7,stroke:#fbc02d,color:#333,stroke-dasharray:4 4,font-size:11px
 
     A([Strategic Sourcing]) --> B[Spend Analysis]
     B --> C[Procurement Strategy]
     C --> D{Sole Source?}
 
-    %% ⚡ CHANGED SECTION — COI checkpoint before Sole Source justification is accepted
-    D --> |Yes| CHK1
-    CHK1 --> E[Draft Justification]
+    %% ⚡ CHANGED SECTION — COI checkpoint before justification is accepted
+    D --> |Yes| E[Draft Justification]
+    E --> COI_CHK{{"Conflict of Interest &\nVendor Independence Check"}}
+    COI_CHK --> G[Legal Review]
 
     D --> |No| F[Supplier Pre-Qual]
-    E --> G[Legal Review]
+
     G --> H{Approved?}
     H --> |No| I[Revise]
     I --> G
     H --> |Yes| J[Direct Negotiation]
+
     F --> K[Market Research]
     K --> L[Longlist]
     L --> M[RFI]
@@ -33,8 +32,8 @@ flowchart TD
     S --> T[Score]
 
     %% ⚡ CHANGED SECTION — Score validation checkpoint before threshold gate
-    T --> CHK2
-    CHK2 --> U{Above 75?}
+    T --> SCORE_CHK{{"RFP Score Validation"}}
+    SCORE_CHK --> U{Above 75?}
 
     U --> |No| V[Reject]
     U --> |Yes| W[Due Diligence]
@@ -42,44 +41,44 @@ flowchart TD
     V --> P
     W --> X[Contract]
 
-    %% ⚡ CHANGED SECTION — ERP access control review after contract, before execution
-    X --> CHK3
-    CHK3 --> Y([Executed])
+    %% ⚡ CHANGED SECTION — Access control review after contract, before ERP setup
+    X --> ERP_CHK{{"ERP Access Control Review"}}
+    ERP_CHK --> Y([Executed])
 
-    %% ⚡ CHANGED SECTION — Documentation gates (data objects / audit artifacts)
-    DOC_B>"Spend Analysis Record (SOX Audit Trail)"]
-    B -.- DOC_B
+    %% ⚡ CHANGED SECTION — Compliance Officer lane
+    subgraph COMP["Compliance Officer"]
+        direction TB
+        COI_CHK
+        SCORE_CHK
+        ERP_CHK
+    end
 
-    DOC_E>"Sole Source Justification Record"]
-    E -.- DOC_E
+    %% ⚡ CHANGED SECTION — Documentation gates (data objects as artifacts)
+    DOC_SPEND>"Spend Analysis Record\n(SOX Audit Trail)"]
+    DOC_SOLE>"Sole Source Justification\nDocumentation"]
+    DOC_SCORE>"RFP Scoring\nDocumentation"]
+    DOC_DD>"Due Diligence\nRecord"]
+    DOC_CONTRACT>"Contract Execution\nRecord"]
 
-    DOC_T>"RFP Scoring Documentation"]
-    T -.- DOC_T
-
-    DOC_W>"Due Diligence Report"]
-    W -.- DOC_W
-
-    DOC_X>"Contract Execution Record"]
-    X -.- DOC_X
+    B -.- DOC_SPEND
+    E -.- DOC_SOLE
+    T -.- DOC_SCORE
+    W -.- DOC_DD
+    X -.- DOC_CONTRACT
 
     %% ⚡ CHANGED SECTION — RACI annotations on major decision points
     RACI_D["RACI — Sole Source?\nR: Procurement Lead\nA: CPO\nC: Compliance Officer\nI: Finance"]
-    D -.- RACI_D
-
     RACI_H["RACI — Approved?\nR: Legal Counsel\nA: CPO\nC: Compliance Officer\nI: Procurement Lead"]
-    H -.- RACI_H
+    RACI_U["RACI — Above 75?\nR: Evaluation Panel\nA: CPO\nC: Compliance Officer\nI: Finance"]
 
-    RACI_U["RACI — Above 75?\nR: Evaluation Panel\nA: CPO\nC: Compliance Officer\nI: Business Owner"]
+    D -.- RACI_D
+    H -.- RACI_H
     U -.- RACI_U
 
-    %% ⚡ CHANGED SECTION — Styles
-    classDef checkpoint fill:#fff3cd,stroke:#d4a017,stroke-width:2px,color:#333
-    classDef dataobj fill:#e8f4fd,stroke:#4a90d9,stroke-width:1px,stroke-dasharray:5 5,color:#333
-    classDef annotation fill:#f9f9f9,stroke:#999,stroke-width:1px,stroke-dasharray:4 4,color:#555
-
-    class CHK1,CHK2,CHK3 checkpoint
-    class DOC_B,DOC_E,DOC_T,DOC_W,DOC_X dataobj
+    %% ⚡ CHANGED SECTION — Apply classes
+    class COI_CHK,SCORE_CHK,ERP_CHK checkpoint
+    class DOC_SPEND,DOC_SOLE,DOC_SCORE,DOC_DD,DOC_CONTRACT dataobj
     class RACI_D,RACI_H,RACI_U annotation
 
 %% EXPLANATION:
-%% Added a Compliance Officer subgraph containing three hexagonal checkpoints: (1) Conflict of Interest & Vendor Independence Review inserted between the Sole Source decision and Draft Justification, (2) Score Validation inserted between Score and the Above 75 threshold gate, and (3) ERP Access Control Review inserted between Contract and Executed. Five documentation artifacts (flag-shaped data objects) were attached via dotted association lines to Spend Analysis, Draft Justification, Score, Due Diligence, and Contract nodes to create an end-to-end audit trail without interrupting sequence flow. RACI annotation nodes were connected via dotted lines to the three major decision gateways (Sole Source, Approved, Above 75). All original paths—sole source, competitive RFP, and reject-resubmit loop—remain intact with their original routing preserved.
+%% Three Compliance Officer checkpoints were added as hexagon nodes inside a dedicated Compliance Officer subgraph (lane): a Conflict of Interest & Vendor Independence Check inserted between Draft Justification and Legal Review on the sole-source path, an RFP Score Validation gate between Score and the Above 75 threshold on the competitive path, and an ERP Access Control Review between Contract and Executed. Five documentation artifacts (flag-shaped data objects with dashed borders) were attached via dotted association lines to Spend Analysis, Draft Justification, Score, Due Diligence, and Contract—none inline in the sequence flow—to create an end-to-end audit trail. RACI annotations were added as styled text nodes connected by dotted lines to the three major decision gateways (Sole Source, Approved, Above 75). All original paths, loops, and routing remain completely unchanged.
