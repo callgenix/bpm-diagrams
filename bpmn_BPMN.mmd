@@ -1,6 +1,7 @@
 sequenceDiagram
     participant R as Requester
     participant M as Manager
+    %% ⚡ CHANGED SECTION
     participant FD as Finance Director
     participant P as Procurement
     participant V as Vendor
@@ -8,18 +9,16 @@ sequenceDiagram
 
     R->>M: Submit purchase request
     M-->>R: PR approved
-
-    %% ⚡ CHANGED SECTION - SOX spend threshold control point
-    alt Amount > $50,000 (SOX Control: Segregation of Duties)
-        M->>FD: Route for second approval (threshold exceeded)
-        FD->>FD: Review spend justification & budget
+    %% ⚡ CHANGED SECTION
+    Note over M,FD: SOX Control: Spend threshold check ($50,000)
+    alt Amount > $50,000
+        M->>FD: Route for second approval (SOX segregation of duties)
+        FD->>FD: Review spend justification
         FD-->>M: Second approval granted
-        M->>P: Forward approved PR (Manager + Finance Director approved)
+        M->>P: Forward approved PR (dual approval)
     else Amount ≤ $50,000
-        M->>P: Forward approved PR (Manager approved)
+        M->>P: Forward approved PR
     end
-    %% ⚡ END CHANGED SECTION
-
     P->>V: Issue Purchase Order
     V-->>P: Order confirmation
     V->>F: Submit invoice
@@ -27,4 +26,4 @@ sequenceDiagram
     F-->>V: Payment processed (NET30)
 
 %% EXPLANATION:
-%% Added a Finance Director participant and an alt/else branch immediately after Manager approval. Purchases over $50,000 are routed to the Finance Director for a second approval before reaching Procurement, while purchases at or under $50,000 continue directly to Procurement. The threshold value and SOX rationale are explicitly labeled in the diagram so auditors can clearly identify the control point.
+%% Added Finance Director as a new participant. After Manager approval, a spend threshold check (annotated with the $50,000 SOX control note for auditor visibility) routes high-value requests through the Finance Director for a second approval before Procurement receives the PR, while requests at or under $50,000 continue directly to Procurement as before. All existing interactions are preserved unchanged.
