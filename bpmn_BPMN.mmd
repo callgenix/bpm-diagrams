@@ -1,7 +1,6 @@
 sequenceDiagram
     participant R as Requester
     participant M as Manager
-    %% ⚡ CHANGED SECTION
     participant FD as Finance Director
     participant P as Procurement
     participant V as Vendor
@@ -9,7 +8,6 @@ sequenceDiagram
 
     R->>M: Submit purchase request
     M-->>R: PR approved
-    %% ⚡ CHANGED SECTION
     Note over M,FD: SOX Control: Spend threshold check ($50,000)
     alt Amount > $50,000
         M->>FD: Route for second approval (SOX segregation of duties)
@@ -23,7 +21,20 @@ sequenceDiagram
     V-->>P: Order confirmation
     V->>F: Submit invoice
     F->>F: 3-way match verification
-    F-->>V: Payment processed (NET30)
+    %% ⚡ CHANGED SECTION
+    alt 3-way match passes
+        F-->>V: Payment processed (NET30)
+    else 3-way match fails (invoice / PO / goods receipt discrepancy)
+        Note over F: SOX Control: Invoice hold – discrepancy detected
+        F->>F: Place invoice on hold
+        F-->>P: Discrepancy notice (mismatch details)
+        F-->>V: Discrepancy notice (mismatch details)
+        V->>P: Submit corrected invoice / documentation
+        P->>P: Review & verify correction
+        P-->>F: Correction confirmed
+        F->>F: Re-run 3-way match verification
+        F-->>V: Payment processed (NET30)
+    end
 
 %% EXPLANATION:
-%% Added Finance Director as a new participant. After Manager approval, a spend threshold check (annotated with the $50,000 SOX control note for auditor visibility) routes high-value requests through the Finance Director for a second approval before Procurement receives the PR, while requests at or under $50,000 continue directly to Procurement as before. All existing interactions are preserved unchanged.
+%% Replaced the single payment step after 3-way match with an alt/else block. The happy path (match passes) proceeds directly to payment. The failure path places the invoice on hold, sends discrepancy notices to both Procurement and the Vendor, waits for the Vendor to submit corrections through Procurement, requires Procurement's explicit confirmation, triggers a re-run of the 3-way match, and only then releases payment. A SOX Control annotation marks the hold as an auditable control point. All existing interactions are preserved unchanged.
