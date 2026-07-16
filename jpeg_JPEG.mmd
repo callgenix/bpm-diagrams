@@ -6,22 +6,22 @@ sequenceDiagram
 
     C->>S: Submit onboarding request
     S->>F: Credit check request
-    %% ⚡ CHANGED SECTION - Risk assessment after credit check
+    %% ⚡ CHANGED SECTION — Added risk assessment decision with expedited path for low-risk customers
     F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
-    alt Low-Risk (all criteria met) - Expedited Path
-        F-->>S: Auto-Approved (Low-Risk, no Director approval needed)
-        S->>IT: Provision accounts (expedited)
-        IT-->>C: Welcome email + credentials (within 24h)
-    else High-Risk (any criteria failed) - Standard Path
+
+    alt Low-Risk (Score >750 AND Verified AND No Payment Issues)
+        F-->>S: Auto-Approved – Low Risk (expedited)
+        S->>IT: Provision accounts (expedited path)
+    else High-Risk
         F->>F: Escalate to Finance Director
-        F-->>S: Director Approval (24h SLA)
-        S->>IT: Provision accounts
-        IT-->>C: Welcome email + credentials
+        F-->>S: Finance Director Approval (24h SLA)
+        S->>IT: Provision accounts (standard path)
     end
-    %% ⚡ END CHANGED SECTION
+    %% END CHANGED SECTION
+    IT-->>C: Welcome email + credentials
     C->>IT: First login confirmation
     IT->>S: Onboarding complete
     S->>C: Kickoff meeting scheduled
 
 %% EXPLANATION:
-%% Added a risk assessment step within Finance after the credit check request. An alt/else block now branches the flow: low-risk customers (score >750, verified company, clean payment history) receive automatic approval and proceed directly to expedited account provisioning, while high-risk customers are escalated to the Finance Director for the existing approval workflow with 24h SLA. Both paths converge at the customer's first login confirmation and subsequent kickoff scheduling.
+%% Replaced the single Finance approval response with a risk assessment step within Finance that evaluates three criteria (credit score >750, verified company status, clean payment history). An `alt` block splits the flow: low-risk customers receive automatic approval and proceed directly to account provisioning via an expedited path, while high-risk customers are escalated to the Finance Director for manual approval under the existing 24h SLA before provisioning continues. All downstream steps remain unchanged.
