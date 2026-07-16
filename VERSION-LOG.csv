@@ -11,3 +11,4 @@ RHONB,004,Three Compliance Officer checkpoints were added as hexagon nodes insid
 PROCM,001,Added Finance Director as a new participant,BPMN,2026-07-15 01:37,044e6295911e
 PROCM,002,Replaced the single payment step after 3-way match with an alt/else block,BPMN,2026-07-15 01:38,10c2e709fb40
 FINOP,005,Added a risk assessment step within Finance after the credit check request,JPEG,2026-07-15 16:24,67ed967181cf
+FINOP,006,Replaced the single Finance approval response with a risk assessment step within Finance that evalua…,JPEG,2026-07-16 11:05,8ae0399f90cd
