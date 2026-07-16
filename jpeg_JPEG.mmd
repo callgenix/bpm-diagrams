@@ -6,12 +6,11 @@ sequenceDiagram
 
     C->>S: Submit onboarding request
     S->>F: Credit check request
-    %% ⚡ CHANGED SECTION — Added risk assessment decision with expedited path for low-risk customers
-    F->>F: Risk Assessment (Score >750, Verified Co., Clean History?)
-
-    alt Low-Risk (Score >750 AND Verified AND No Payment Issues)
-        F-->>S: Auto-Approved – Low Risk (expedited)
-        S->>IT: Provision accounts (expedited path)
+    %% ⚡ CHANGED SECTION — Added risk assessment with expedited path for low-risk customers
+    F->>F: Risk Assessment (Credit Score, Company Status, Payment History)
+    alt Low-Risk (Score >750 AND Verified Company AND Clean Payment History)
+        F-->>S: Auto-Approved – Low Risk (Expedited Path)
+        S->>IT: Provision accounts (expedited)
     else High-Risk
         F->>F: Escalate to Finance Director
         F-->>S: Finance Director Approval (24h SLA)
@@ -24,4 +23,4 @@ sequenceDiagram
     S->>C: Kickoff meeting scheduled
 
 %% EXPLANATION:
-%% Replaced the single Finance approval step with a risk assessment decision point inside Finance. An `alt`/`else` block now branches the flow: low-risk customers (credit score >750, verified company status, no payment history issues) receive automatic approval and proceed directly to account provisioning via an expedited path, while high-risk customers are escalated to the Finance Director for the existing 24h SLA approval workflow. Both paths converge at account provisioning and continue through the same welcome/login/kickoff sequence.
+%% Replaced the single Finance approval step with a risk assessment decision point using an `alt/else` block. The low-risk path (credit score >750, verified company status, no payment history issues) auto-approves and proceeds directly to expedited account provisioning, bypassing Finance Director review. High-risk customers are escalated to the Finance Director for approval under the existing 24h SLA before provisioning proceeds. Both paths then converge at the welcome email step.
