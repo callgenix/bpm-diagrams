@@ -12,3 +12,4 @@ PROCM,001,Added Finance Director as a new participant,BPMN,2026-07-15 01:37,044e
 PROCM,002,Replaced the single payment step after 3-way match with an alt/else block,BPMN,2026-07-15 01:38,10c2e709fb40
 FINOP,005,Added a risk assessment step within Finance after the credit check request,JPEG,2026-07-15 16:24,67ed967181cf
 FINOP,006,Replaced the single Finance approval response with a risk assessment step within Finance that evalua…,JPEG,2026-07-16 11:05,8ae0399f90cd
+FINOP,007,Replaced the single Finance approval step with a risk assessment decision point inside Finance,JPEG,2026-07-16 13:54,4f49508dc841
