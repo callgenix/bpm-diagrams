@@ -15,3 +15,4 @@ FINOP,006,Replaced the single Finance approval response with a risk assessment s
 FINOP,007,Replaced the single Finance approval step with a risk assessment decision point inside Finance,JPEG,2026-07-16 13:54,4f49508dc841
 FINOP,008,Replaced the single Finance approval step with a risk assessment decision point using an `alt/else`…,JPEG,2026-07-16 14:06,b0993701eab3
 FINOP,009,Replaced the single Finance approval step with a risk assessment performed by Finance,JPEG,2026-07-16 23:40,ecdb31ad71ab
+FINOP,010,Replaced the single Finance approval step with a risk assessment decision point inside Finance,JPEG,2026-07-18 15:23,cec31c0c1c73
