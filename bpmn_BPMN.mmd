@@ -1,40 +1,40 @@
-sequenceDiagram
-    participant R as Requester
-    participant M as Manager
-    participant FD as Finance Director
-    participant P as Procurement
-    participant V as Vendor
-    participant F as Finance
-
-    R->>M: Submit purchase request
-    M-->>R: PR approved
-    Note over M,FD: SOX Control: Spend threshold check ($50,000)
-    alt Amount > $50,000
-        M->>FD: Route for second approval (SOX segregation of duties)
-        FD->>FD: Review spend justification
-        FD-->>M: Second approval granted
-        M->>P: Forward approved PR (dual approval)
-    else Amount ≤ $50,000
-        M->>P: Forward approved PR
-    end
-    P->>V: Issue Purchase Order
-    V-->>P: Order confirmation
-    V->>F: Submit invoice
-    F->>F: 3-way match verification
-    %% ⚡ CHANGED SECTION
-    alt 3-way match passes
-        F-->>V: Payment processed (NET30)
-    else 3-way match fails (invoice / PO / goods receipt discrepancy)
-        Note over F: SOX Control: Invoice hold – discrepancy detected
-        F->>F: Place invoice on hold
-        F-->>P: Discrepancy notice (mismatch details)
-        F-->>V: Discrepancy notice (mismatch details)
-        V->>P: Submit corrected invoice / documentation
-        P->>P: Review & verify correction
-        P-->>F: Correction confirmed
-        F->>F: Re-run 3-way match verification
-        F-->>V: Payment processed (NET30)
+flowchart TD
+    subgraph AP["Accounts Payable"]
+        direction TB
+        StartEvent_1([Invoice Received])
+        Task_Match["Match Invoice to PO and Receipt (3-Way Match)"]
+        Gateway_MatchOk{"Match Successful?"}
+        Task_SubmitPayment["Submit for Payment Approval"]
+        Task_NotifyDiscrepancy["Notify Procurement of Discrepancy"]
+        Task_ReceiveCorrected["Receive Corrected Documentation"]
     end
 
-%% EXPLANATION:
-%% Replaced the single payment step after 3-way match with an alt/else block. The happy path (match passes) proceeds directly to payment. The failure path places the invoice on hold, sends discrepancy notices to both Procurement and the Vendor, waits for the Vendor to submit corrections through Procurement, requires Procurement's explicit confirmation, triggers a re-run of the 3-way match, and only then releases payment. A SOX Control annotation marks the hold as an auditable control point. All existing interactions are preserved unchanged.
+    subgraph PROC["Procurement"]
+        direction TB
+        Task_Investigate["Investigate Discrepancy"]
+        Gateway_RootCause{"Root Cause?"}
+        Task_ContactVendor["Contact Vendor for Correction"]
+        Task_InternalCorrection["Correct Internal Receipt Record"]
+        Task_RequestCorrected["Confirm Correction with Requester"]
+    end
+
+    subgraph FM["Finance Manager"]
+        direction TB
+        Task_ApprovePayment["Approve and Release Payment"]
+        EndEvent_1([Payment Released])
+    end
+
+    StartEvent_1 --> Task_Match
+    Task_Match --> Gateway_MatchOk
+    Gateway_MatchOk -->|Yes| Task_SubmitPayment
+    Gateway_MatchOk -->|No| Task_NotifyDiscrepancy
+    Task_SubmitPayment --> Task_ApprovePayment
+    Task_ApprovePayment --> EndEvent_1
+    Task_NotifyDiscrepancy --> Task_Investigate
+    Task_Investigate --> Gateway_RootCause
+    Gateway_RootCause -->|Vendor error| Task_ContactVendor
+    Gateway_RootCause -->|Internal error| Task_InternalCorrection
+    Task_ContactVendor --> Task_RequestCorrected
+    Task_InternalCorrection --> Task_RequestCorrected
+    Task_RequestCorrected --> Task_ReceiveCorrected
+    Task_ReceiveCorrected -->|Re-match| Task_Match
