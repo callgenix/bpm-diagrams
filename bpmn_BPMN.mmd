@@ -18,18 +18,18 @@ flowchart TD
         Task_RequestCorrected["Confirm Correction with Requester"]
     end
 
-    %% ⚡ CHANGED SECTION — Replaced Finance Manager with AP Manager lane for first-level approval and amount threshold gateway
+    %% ⚡ CHANGED SECTION — Replaced Finance Manager with AP Manager lane for first-level approval and threshold gateway
     subgraph APM["AP Manager"]
         direction TB
-        Task_APMApproval["Review and Approve Payment"]
-        Gateway_Amount{"Amount > $10,000?"}
+        Task_APMApprove["Review and Approve Payment"]
+        Gateway_Threshold{"Amount > $10,000?"}
     end
     %% END CHANGED SECTION
 
     %% ⚡ CHANGED SECTION — Added Finance Director lane for second-level approval on high-value payments
     subgraph FD["Finance Director"]
         direction TB
-        Task_FDApproval["Second-Level Approval (Independent)"]
+        Task_FDApprove["Second Approval — Independent Review"]
     end
     %% END CHANGED SECTION
 
@@ -41,16 +41,20 @@ flowchart TD
     end
     %% END CHANGED SECTION
 
-    %% ⚡ CHANGED SECTION — Audit trail data objects for each approval step
-    DOC_APM>"Approval Log: AP Manager&#10;(Name + Timestamp)"]
-    DOC_FD>"Approval Log: Finance Director&#10;(Name + Timestamp)"]
+    %% ⚡ CHANGED SECTION — Audit-evidence artifacts (approval logs) attached to each approval task
+    DOC_APM>"Approval Log: AP Manager name + timestamp"]
+    DOC_FD>"Approval Log: Finance Director name + timestamp"]
+
+    Task_APMApprove -.- DOC_APM
+    Task_FDApprove -.- DOC_FD
     %% END CHANGED SECTION
 
-    %% ⚡ CHANGED SECTION — SOX segregation-of-duties annotation on AP lane
-    classDef annotation stroke-dasharray:5 5,fill:#fffbe6,stroke:#bbb;
-    NOTE_SOD["SOX: AP Clerk who performs 3-way match&#10;must not approve payment"]
-    Task_Match -.- NOTE_SOD
-    class NOTE_SOD annotation;
+    %% ⚡ CHANGED SECTION — SOD annotation on the AP Manager approval
+    SOD_Note["Segregation of Duties: AP Clerk who matched
+    invoice must not be the AP Manager approving it"]
+    Task_APMApprove -.- SOD_Note
+    classDef annotation stroke-dasharray:5 5,fill:#fffde7,stroke:#999;
+    class SOD_Note annotation
     %% END CHANGED SECTION
 
     StartEvent_1 --> Task_Match
@@ -59,13 +63,11 @@ flowchart TD
     Gateway_MatchOk -->|No| Task_NotifyDiscrepancy
 
     %% ⚡ CHANGED SECTION — Rerouted approval flow through AP Manager, threshold check, optional Finance Director, then release
-    Task_SubmitPayment --> Task_APMApproval
-    Task_APMApproval -.- DOC_APM
-    Task_APMApproval --> Gateway_Amount
-    Gateway_Amount -->|Yes| Task_FDApproval
-    Task_FDApproval -.- DOC_FD
-    Task_FDApproval --> Task_ReleasePayment
-    Gateway_Amount -->|No| Task_ReleasePayment
+    Task_SubmitPayment --> Task_APMApprove
+    Task_APMApprove --> Gateway_Threshold
+    Gateway_Threshold -->|Yes| Task_FDApprove
+    Gateway_Threshold -->|No| Task_ReleasePayment
+    Task_FDApprove --> Task_ReleasePayment
     Task_ReleasePayment --> EndEvent_1
     %% END CHANGED SECTION
 
@@ -78,10 +80,10 @@ flowchart TD
     Task_RequestCorrected --> Task_ReceiveCorrected
     Task_ReceiveCorrected -->|Re-match| Task_Match
 
-    %% ⚡ CHANGED SECTION — Style definitions for checkpoints and data objects
-    classDef dataobj fill:#e8f4fd,stroke:#4a90d9,stroke-dasharray:4 3;
-    class DOC_APM,DOC_FD dataobj;
+    %% ⚡ CHANGED SECTION — Style definitions for checkpoints, data objects, and annotations
+    classDef dataobj fill:#e3f2fd,stroke:#1565c0,stroke-dasharray:5 5;
+    class DOC_APM,DOC_FD dataobj
     %% END CHANGED SECTION
 
 %% EXPLANATION:
-%% Removed the single Finance Manager approval step and replaced it with a two-tier approval chain: (1) an AP Manager lane that reviews and approves every payment (segregated from the AP Clerk who performs the match), and (2) an amount threshold gateway that routes payments above $10,000 to a new Finance Director lane for an independent second approval. The Finance Manager lane now only releases the payment after all approvals are complete. Two audit-trail data objects (AP Manager Approval Log and Finance Director Approval Log, each capturing name and timestamp) are attached as artifacts to their respective approval tasks via dotted association lines. A SOX annotation is attached to the 3-way match task to document the segregation-of-duties control.
+%% Replaced the single Finance Manager approval with a two-tier approval chain: an AP Manager performs the first approval (segregated from the AP clerk who did the match), and a Finance Director provides an independent second approval when the amount exceeds $10,000. The Finance Manager lane now only releases payment. Two audit-log data objects (approver name + timestamp) are attached as artifacts to each approval task via dotted association lines, keeping them off the main sequence flow. A dashed annotation node documents the segregation-of-duties control requirement on the AP Manager approval step.
