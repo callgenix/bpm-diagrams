@@ -1,27 +1,27 @@
 flowchart TD
-    subgraph AP["Accounts Payable Clerk"]
+    subgraph AP["Accounts Payable"]
         direction TB
         StartEvent_1([Invoice Received])
         Task_Match["Match Invoice to PO and Receipt (3-Way Match)"]
         Gateway_MatchOk{"Match Successful?"}
-        Task_SubmitPayment[Submit for Payment Approval]
-        Task_NotifyDiscrepancy[Notify Procurement of Discrepancy]
-        Task_ReceiveCorrected[Receive Corrected Documentation]
+        Task_SubmitPayment["Submit for Payment Approval"]
+        Task_NotifyDiscrepancy["Notify Procurement of Discrepancy"]
+        Task_ReceiveCorrected["Receive Corrected Documentation"]
     end
 
     subgraph PROC["Procurement"]
         direction TB
-        Task_Investigate[Investigate Discrepancy]
+        Task_Investigate["Investigate Discrepancy"]
         Gateway_RootCause{"Root Cause?"}
-        Task_ContactVendor[Contact Vendor for Correction]
-        Task_InternalCorrection[Correct Internal Receipt Record]
-        Task_RequestCorrected[Confirm Correction with Requester]
+        Task_ContactVendor["Contact Vendor for Correction"]
+        Task_InternalCorrection["Correct Internal Receipt Record"]
+        Task_RequestCorrected["Confirm Correction with Requester"]
     end
 
-    %% ⚡ CHANGED SECTION — Replaced Finance Manager lane with AP Manager lane for first-level approval and amount threshold gateway
+    %% ⚡ CHANGED SECTION — Replaced Finance Manager with AP Manager lane for first-level approval and amount threshold gateway
     subgraph APM["AP Manager"]
         direction TB
-        Task_APMApprove[Review and Approve Payment]
+        Task_APMApproval["Review and Approve Payment"]
         Gateway_Amount{"Amount > $10,000?"}
     end
     %% END CHANGED SECTION
@@ -29,30 +29,28 @@ flowchart TD
     %% ⚡ CHANGED SECTION — Added Finance Director lane for second-level approval on high-value payments
     subgraph FD["Finance Director"]
         direction TB
-        Task_FDApprove[Second-Level Approval]
+        Task_FDApproval["Second-Level Approval (Independent)"]
     end
     %% END CHANGED SECTION
 
-    %% ⚡ CHANGED SECTION — Retained Finance Manager lane for payment release only
+    %% ⚡ CHANGED SECTION — Retained Finance Manager lane only for payment release
     subgraph FM["Finance Manager"]
         direction TB
-        Task_ReleasePayment[Release Payment]
+        Task_ReleasePayment["Release Payment"]
         EndEvent_1([Payment Released])
     end
     %% END CHANGED SECTION
 
-    %% ⚡ CHANGED SECTION — Audit log artifacts attached to each approval task
-    DOC_APMLog>"AP Manager Approval Log (name + timestamp)"]
-    DOC_FDLog>"Finance Director Approval Log (name + timestamp)"]
-    Task_APMApprove -.- DOC_APMLog
-    Task_FDApprove -.- DOC_FDLog
+    %% ⚡ CHANGED SECTION — Audit trail data objects for each approval step
+    DOC_APM>"Approval Log: AP Manager&#10;(Name + Timestamp)"]
+    DOC_FD>"Approval Log: Finance Director&#10;(Name + Timestamp)"]
     %% END CHANGED SECTION
 
-    %% ⚡ CHANGED SECTION — SOD annotation on the AP Manager approval node
-    classDef annotation stroke-dasharray:5 5,fill:#fffbe6,stroke:#b8860b;
-    SOD_Note["SOD Control: Approver must differ from clerk who performed 3-way match"]
-    Task_APMApprove -.- SOD_Note
-    class SOD_Note annotation;
+    %% ⚡ CHANGED SECTION — SOX segregation-of-duties annotation on AP lane
+    classDef annotation stroke-dasharray:5 5,fill:#fffbe6,stroke:#bbb;
+    NOTE_SOD["SOX: AP Clerk who performs 3-way match&#10;must not approve payment"]
+    Task_Match -.- NOTE_SOD
+    class NOTE_SOD annotation;
     %% END CHANGED SECTION
 
     StartEvent_1 --> Task_Match
@@ -60,12 +58,14 @@ flowchart TD
     Gateway_MatchOk -->|Yes| Task_SubmitPayment
     Gateway_MatchOk -->|No| Task_NotifyDiscrepancy
 
-    %% ⚡ CHANGED SECTION — Routed payment approval through AP Manager, amount gateway, optional Finance Director, then release
-    Task_SubmitPayment --> Task_APMApprove
-    Task_APMApprove --> Gateway_Amount
-    Gateway_Amount -->|"Yes (≥ $10k)"| Task_FDApprove
-    Gateway_Amount -->|"No (< $10k)"| Task_ReleasePayment
-    Task_FDApprove --> Task_ReleasePayment
+    %% ⚡ CHANGED SECTION — Rerouted approval flow through AP Manager, threshold check, optional Finance Director, then release
+    Task_SubmitPayment --> Task_APMApproval
+    Task_APMApproval -.- DOC_APM
+    Task_APMApproval --> Gateway_Amount
+    Gateway_Amount -->|Yes| Task_FDApproval
+    Task_FDApproval -.- DOC_FD
+    Task_FDApproval --> Task_ReleasePayment
+    Gateway_Amount -->|No| Task_ReleasePayment
     Task_ReleasePayment --> EndEvent_1
     %% END CHANGED SECTION
 
@@ -78,10 +78,10 @@ flowchart TD
     Task_RequestCorrected --> Task_ReceiveCorrected
     Task_ReceiveCorrected -->|Re-match| Task_Match
 
-    %% ⚡ CHANGED SECTION — Style definitions for audit artifacts
-    classDef dataobj fill:#e8f4fd,stroke:#1a73e8,stroke-dasharray:4 2;
-    class DOC_APMLog,DOC_FDLog dataobj;
+    %% ⚡ CHANGED SECTION — Style definitions for checkpoints and data objects
+    classDef dataobj fill:#e8f4fd,stroke:#4a90d9,stroke-dasharray:4 3;
+    class DOC_APM,DOC_FD dataobj;
     %% END CHANGED SECTION
 
 %% EXPLANATION:
-%% Renamed the original AP subgraph to "Accounts Payable Clerk" to clarify the role boundary. Added a new "AP Manager" lane containing the first-level payment approval and an amount threshold gateway ($10,000). Added a "Finance Director" lane for the required second-level approval on high-value payments. Rerouted the approval flow so Submit for Payment goes to AP Manager → amount check → (optionally) Finance Director → Release Payment. Attached audit log data objects (approver name + timestamp) to both approval tasks via dotted association lines so they don't block the sequence flow. Added a dashed-border SOD annotation to the AP Manager approval node documenting the segregation-of-duties control.
+%% Removed the single Finance Manager approval step and replaced it with a two-tier approval chain: (1) an AP Manager lane that reviews and approves every payment (segregated from the AP Clerk who performs the match), and (2) an amount threshold gateway that routes payments above $10,000 to a new Finance Director lane for an independent second approval. The Finance Manager lane now only releases the payment after all approvals are complete. Two audit-trail data objects (AP Manager Approval Log and Finance Director Approval Log, each capturing name and timestamp) are attached as artifacts to their respective approval tasks via dotted association lines. A SOX annotation is attached to the 3-way match task to document the segregation-of-duties control.
