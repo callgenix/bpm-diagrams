@@ -18,3 +18,4 @@ FINOP,009,Replaced the single Finance approval step with a risk assessment perfo
 FINOP,010,Replaced the single Finance approval step with a risk assessment decision point inside Finance,JPEG,2026-07-18 15:23,cec31c0c1c73
 PROCM,003,The source is a BPMN 2,BPMN,2026-07-18 20:45,50c2ca24388d
 PROCM,004,"Renamed the original AP subgraph to ""Accounts Payable Clerk"" to clarify the role boundary",BPMN,2026-07-20 17:29,c9f4850c67b7
+PROCM,005,Removed the single Finance Manager approval step and replaced it with a two-tier approval chain: (1)…,BPMN,2026-07-20 17:54,3aed74591e00
