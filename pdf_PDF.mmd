@@ -1,84 +1,65 @@
 flowchart TD
-    %% ⚡ CHANGED SECTION — Style definitions
-    classDef checkpoint fill:#ff6b35,stroke:#c74a1a,color:#fff,stroke-width:2px
-    classDef dataobj fill:#e8f4fd,stroke:#2196f3,color:#333,stroke-dasharray:5 5
-    classDef annotation fill:#fffde7,stroke:#fbc02d,color:#333,stroke-dasharray:4 4,font-size:11px
+    A([Requisition Submitted]) --> B[Budget Availability Check]
+    B --> C{Budget Available?}
+    C -->|No| D[Request Budget Exception]
+    D --> E[Budget Committee Review]
+    E --> F{Committee Approves?}
+    F -->|No| G([Requisition Rejected])
+    F -->|Yes| H[Vendor Selection & Sourcing]
+    C -->|Yes| H
+    H --> I{Preferred Vendor Exists?}
+    I -->|Yes| J[Direct Award]
+    I -->|No| K[RFQ Process]
+    K --> L[Compare Vendor Quotes]
+    L --> M[Purchase Order Created & Approved]
+    J --> M
+    M --> N{PO Value Above $50,000?}
+    N -->|Yes| O[VP Additional Approval]
+    N -->|No| P[Goods or Services Received]
+    O --> P
+    P --> Q[Vendor Invoice Received]
+    Q --> R[Three-Way Match PO / Receipt / Invoice]
+    R --> S{Match Successful?}
+    S -->|No| T[Discrepancy Investigation]
+    T --> U[Corrected Invoice Received]
+    U -.->|Re-match| R
+    %% [1] start
+    S -->|Yes| V2[Payment Approval Requested]
 
-    A([Strategic Sourcing]) --> B[Spend Analysis]
-    B --> C[Procurement Strategy]
-    C --> D{Sole Source?}
-
-    %% ⚡ CHANGED SECTION — COI checkpoint before justification is accepted
-    D --> |Yes| E[Draft Justification]
-    E --> COI_CHK{{"Conflict of Interest &\nVendor Independence Check"}}
-    COI_CHK --> G[Legal Review]
-
-    D --> |No| F[Supplier Pre-Qual]
-
-    G --> H{Approved?}
-    H --> |No| I[Revise]
-    I --> G
-    H --> |Yes| J[Direct Negotiation]
-
-    F --> K[Market Research]
-    K --> L[Longlist]
-    L --> M[RFI]
-    M --> N[RFI Eval]
-    N --> O[Shortlist]
-    O --> P[RFP]
-    P --> Q[Q&A]
-    Q --> R[Final Proposals]
-    R --> S[Evaluation Panel]
-    S --> T[Score]
-
-    %% ⚡ CHANGED SECTION — Score validation checkpoint before threshold gate
-    T --> SCORE_CHK{{"RFP Score Validation"}}
-    SCORE_CHK --> U{Above 75?}
-
-    U --> |No| V[Reject]
-    U --> |Yes| W[Due Diligence]
-    J --> W
-    V --> P
-    W --> X[Contract]
-
-    %% ⚡ CHANGED SECTION — Access control review after contract, before ERP setup
-    X --> ERP_CHK{{"ERP Access Control Review"}}
-    ERP_CHK --> Y([Executed])
-
-    %% ⚡ CHANGED SECTION — Compliance Officer lane
-    subgraph COMP["Compliance Officer"]
+    subgraph APMGR["AP Manager"]
         direction TB
-        COI_CHK
-        SCORE_CHK
-        ERP_CHK
+        V[Payment Reviewed, Approved & Released]
     end
 
-    %% ⚡ CHANGED SECTION — Documentation gates (data objects as artifacts)
-    DOC_SPEND>"Spend Analysis Record\n(SOX Audit Trail)"]
-    DOC_SOLE>"Sole Source Justification\nDocumentation"]
-    DOC_SCORE>"RFP Scoring\nDocumentation"]
-    DOC_DD>"Due Diligence\nRecord"]
-    DOC_CONTRACT>"Contract Execution\nRecord"]
+    V2 --> V
+    %% [1] end
+    %% [2] start
+    V --> X{Payment Above $10,000?}
 
-    B -.- DOC_SPEND
-    E -.- DOC_SOLE
-    T -.- DOC_SCORE
-    W -.- DOC_DD
-    X -.- DOC_CONTRACT
+    subgraph FINDIR["Finance Director"]
+        direction TB
+        Y[Independent Payment Approval]
+    end
 
-    %% ⚡ CHANGED SECTION — RACI annotations on major decision points
-    RACI_D["RACI — Sole Source?\nR: Procurement Lead\nA: CPO\nC: Compliance Officer\nI: Finance"]
-    RACI_H["RACI — Approved?\nR: Legal Counsel\nA: CPO\nC: Compliance Officer\nI: Procurement Lead"]
-    RACI_U["RACI — Above 75?\nR: Evaluation Panel\nA: CPO\nC: Compliance Officer\nI: Finance"]
+    X -->|Yes| Y
+    Y --> W([Payment Confirmation Sent to Vendor])
+    X -->|No| W
+    %% [2] end
 
-    D -.- RACI_D
-    H -.- RACI_H
-    U -.- RACI_U
+    %% ⚡ CHANGED SECTION — Added audit logging records for AP Manager and Finance Director approvals
+    LOG1>"Approval Log: Approver Name & Timestamp"]
+    V -.- LOG1
+    LOG2>"Approval Log: Approver Name & Timestamp"]
+    Y -.- LOG2
 
-    %% ⚡ CHANGED SECTION — Apply classes
-    class COI_CHK,SCORE_CHK,ERP_CHK checkpoint
-    class DOC_SPEND,DOC_SOLE,DOC_SCORE,DOC_DD,DOC_CONTRACT dataobj
-    class RACI_D,RACI_H,RACI_U annotation
+    classDef dataObject fill:#fff9db,stroke:#d4b106,stroke-width:1px;
+    class LOG1,LOG2 dataObject;
+    %% END CHANGED SECTION
+
+%% ═══ CHANGE LOG ═══
+%% [1] AP Manager approval step — Added a "Payment Approval Requested" step and AP Manager subgraph so payment release is separated from the AP clerk's match duties.
+%% [2] Finance Director second approval — Added a decision on payment amount above $10,000 that routes to a new Finance Director subgraph for independent approval before payment confirmation, otherwise proceeding directly.
+%% [3] Approval audit logging — Attached data-object nodes to the AP Manager and Finance Director approval tasks capturing approver name and timestamp for audit evidence, without altering the main flow.
 
 %% EXPLANATION:
-%% Three Compliance Officer checkpoints were added as hexagon nodes inside a dedicated Compliance Officer subgraph (lane): a Conflict of Interest & Vendor Independence Check inserted between Draft Justification and Legal Review on the sole-source path, an RFP Score Validation gate between Score and the Above 75 threshold on the competitive path, and an ERP Access Control Review between Contract and Executed. Five documentation artifacts (flag-shaped data objects with dashed borders) were attached via dotted association lines to Spend Analysis, Draft Justification, Score, Due Diligence, and Contract—none inline in the sequence flow—to create an end-to-end audit trail. RACI annotations were added as styled text nodes connected by dotted lines to the three major decision gateways (Sole Source, Approved, Above 75). All original paths, loops, and routing remain completely unchanged.
+%% Added two data-object nodes ("Approval Log: Approver Name & Timestamp") attached via dotted association lines to the AP Manager's "Payment Reviewed, Approved & Released" task and the Finance Director's "Independent Payment Approval" task. These artifacts record audit evidence without being inserted into the main sequence flow, consistent with BPMN data-object conventions. A shared `dataObject` classDef styles both log nodes.
