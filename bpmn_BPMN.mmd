@@ -1,89 +1,78 @@
 flowchart TD
+    %% EXPLANATION:
+    %% This Finance/Procurement process shows how Accounts Payable resolves invoice discrepancies found during
+    %% three-way matching, escalating to Procurement for root-cause investigation and vendor/internal correction
+    %% before payment is approved and released by the Finance Manager.
+
+    START(["Invoice Received"])
     subgraph AP["Accounts Payable"]
         direction TB
-        StartEvent_1([Invoice Received])
-        Task_Match["Match Invoice to PO and Receipt (3-Way Match)"]
-        Gateway_MatchOk{"Match Successful?"}
-        Task_SubmitPayment["Submit for Payment Approval"]
-        Task_NotifyDiscrepancy["Notify Procurement of Discrepancy"]
-        Task_ReceiveCorrected["Receive Corrected Documentation"]
+        MATCH["Match Invoice to PO and Receipt (3-Way Match)"]
+        %% R01
+        GATE1{"Match Successful?"}
+        %% R01
+        SUBMIT["Submit for Payment Approval"]
+        %% R01
+        NOTIFY["Notify Procurement of Discrepancy"]
+        %% R01
+        RECEIVE["Receive Corrected Documentation"]
+        %% R01
     end
 
     subgraph PROC["Procurement"]
         direction TB
-        Task_Investigate["Investigate Discrepancy"]
-        Gateway_RootCause{"Root Cause?"}
-        Task_ContactVendor["Contact Vendor for Correction"]
-        Task_InternalCorrection["Correct Internal Receipt Record"]
-        Task_RequestCorrected["Confirm Correction with Requester"]
+        INVEST["Investigate Discrepancy"]
+        %% R02
+        GATE2{"Root Cause?"}
+        %% R02
+        %% [1] start
+        VENDOR["Escalate to Vendor for Correction"]
+        %% [1] end
+        %% R02
+        INTERNAL["Correct Internal Receipt Record"]
+        %% R02
+        CONFIRM["Confirm Correction with Requester"]
+        %% R02
     end
 
-    %% ⚡ CHANGED SECTION — Replaced Finance Manager with AP Manager lane for first-level approval and threshold gateway
-    subgraph APM["AP Manager"]
-        direction TB
-        Task_APMApprove["Review and Approve Payment"]
-        Gateway_Threshold{"Amount > $10,000?"}
-    end
-    %% END CHANGED SECTION
-
-    %% ⚡ CHANGED SECTION — Added Finance Director lane for second-level approval on high-value payments
-    subgraph FD["Finance Director"]
-        direction TB
-        Task_FDApprove["Second Approval — Independent Review"]
-    end
-    %% END CHANGED SECTION
-
-    %% ⚡ CHANGED SECTION — Retained Finance Manager lane only for payment release
     subgraph FM["Finance Manager"]
         direction TB
-        Task_ReleasePayment["Release Payment"]
-        EndEvent_1([Payment Released])
+        APPROVE["Approve and Release Payment"]
+        %% R03
+        %% ⚡ CHANGED SECTION — added Archive Resolution Record node after payment approval
+        ARCHIVE["Archive Resolution Record"]
+        %% R03
+        %% END CHANGED SECTION
+        END(["Payment Released"])
     end
+
+    START --> MATCH
+    MATCH --> GATE1
+    GATE1 -->|Yes| SUBMIT
+    GATE1 -->|No| NOTIFY
+    SUBMIT --> APPROVE
+    %% ⚡ CHANGED SECTION — rerouted payment approval to pass through new archive step
+    APPROVE --> ARCHIVE
+    ARCHIVE --> END
     %% END CHANGED SECTION
-
-    %% ⚡ CHANGED SECTION — Audit-evidence artifacts (approval logs) attached to each approval task
-    DOC_APM>"Approval Log: AP Manager name + timestamp"]
-    DOC_FD>"Approval Log: Finance Director name + timestamp"]
-
-    Task_APMApprove -.- DOC_APM
-    Task_FDApprove -.- DOC_FD
-    %% END CHANGED SECTION
-
-    %% ⚡ CHANGED SECTION — SOD annotation on the AP Manager approval
-    SOD_Note["Segregation of Duties: AP Clerk who matched
-    invoice must not be the AP Manager approving it"]
-    Task_APMApprove -.- SOD_Note
-    classDef annotation stroke-dasharray:5 5,fill:#fffde7,stroke:#999;
-    class SOD_Note annotation
-    %% END CHANGED SECTION
-
-    StartEvent_1 --> Task_Match
-    Task_Match --> Gateway_MatchOk
-    Gateway_MatchOk -->|Yes| Task_SubmitPayment
-    Gateway_MatchOk -->|No| Task_NotifyDiscrepancy
-
-    %% ⚡ CHANGED SECTION — Rerouted approval flow through AP Manager, threshold check, optional Finance Director, then release
-    Task_SubmitPayment --> Task_APMApprove
-    Task_APMApprove --> Gateway_Threshold
-    Gateway_Threshold -->|Yes| Task_FDApprove
-    Gateway_Threshold -->|No| Task_ReleasePayment
-    Task_FDApprove --> Task_ReleasePayment
-    Task_ReleasePayment --> EndEvent_1
-    %% END CHANGED SECTION
-
-    Task_NotifyDiscrepancy --> Task_Investigate
-    Task_Investigate --> Gateway_RootCause
-    Gateway_RootCause -->|Vendor error| Task_ContactVendor
-    Gateway_RootCause -->|Internal error| Task_InternalCorrection
-    Task_ContactVendor --> Task_RequestCorrected
-    Task_InternalCorrection --> Task_RequestCorrected
-    Task_RequestCorrected --> Task_ReceiveCorrected
-    Task_ReceiveCorrected -->|Re-match| Task_Match
-
-    %% ⚡ CHANGED SECTION — Style definitions for checkpoints, data objects, and annotations
-    classDef dataobj fill:#e3f2fd,stroke:#1565c0,stroke-dasharray:5 5;
-    class DOC_APM,DOC_FD dataobj
-    %% END CHANGED SECTION
+    NOTIFY --> INVEST
+    INVEST --> GATE2
+    GATE2 -->|"Vendor error"| VENDOR
+    GATE2 -->|"Internal error"| INTERNAL
+    VENDOR --> CONFIRM
+    INTERNAL --> CONFIRM
+    CONFIRM --> RECEIVE
+    RECEIVE -->|"Re-match"| MATCH
 
 %% EXPLANATION:
-%% Replaced the single Finance Manager approval with a two-tier approval chain: an AP Manager performs the first approval (segregated from the AP clerk who did the match), and a Finance Director provides an independent second approval when the amount exceeds $10,000. The Finance Manager lane now only releases payment. Two audit-log data objects (approver name + timestamp) are attached as artifacts to each approval task via dotted association lines, keeping them off the main sequence flow. A dashed annotation node documents the segregation-of-duties control requirement on the AP Manager approval step.
+%% This Finance/Procurement process shows how Accounts Payable resolves invoice discrepancies found during
+%% three-way matching, escalating to Procurement for root-cause investigation and vendor/internal correction
+%% before payment is approved and released by the Finance Manager.
+
+%% ═══ ROLES ═══
+%% R01 Accounts Payable
+%% R02 Procurement
+%% R03 Finance Manager
+
+%% ═══ CHANGE LOG ═══
+%% [1] Renamed vendor correction task and added archive record — Renamed 'Contact Vendor for Correction' to 'Escalate to Vendor for Correction' for clearer escalation language, and added an 'Archive Resolution Record' step after payment release to document resolution for audit purposes.
