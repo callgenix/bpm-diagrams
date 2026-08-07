@@ -23,3 +23,4 @@ PROCM,006,Replaced the single Finance Manager approval with a two-tier approval 
 RHONB,005,"Added two data-object nodes (""Approval Log: Approver Name & Timestamp"") attached via dotted associat…",PDF,2026-07-24 12:23,caeab171b65e
 PROCM,007,Renamed the 'Contact Vendor for Correction' task to 'Escalate to Vendor for Correction' to better re…,BPMN,2026-08-05 14:32,322526e6f600
 CUSTM,001,Loaded a 3-shape starter diagram,MERMAID,2026-08-07 11:10,a7a92d9ff8d0
+RHONB,006,"Added a hexagon checkpoint ""15-Min Automated Monitoring Window"" after the existing ""Post-Deploy Moni…",SVG,2026-08-07 11:18,72bf2a202798
