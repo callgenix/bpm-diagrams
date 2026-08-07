@@ -1,32 +1,63 @@
-flowchart LR
-    A([Dev Complete]) --> B[Peer Code Review]
-    B --> C{Tests Pass?}
-    C --> |Fail| A
-    C --> |Pass| D[QA Validation]
-    D --> E{QA Sign-off?}
-    E --> |No| A
-    E --> |Yes| F[Security Scan]
-    F --> G{Clear?}
-    G --> |No| H[Fix Vulnerabilities]
-    H --> F
-    G --> |Yes| I[VP Engineering Approval]
-    I --> J([Production Release])
+flowchart TD
+    N1(["Dev Complete"])
+    N2{"Code Review Approved?"}
+    N3["Address Review Comments"]
+    N4["Automated Test Suite"]
+    N5{"Tests Pass?"}
+    N6["Security Scan"]
+    N7{"Scan Clear?"}
+    N8["Fix Vulnerabilities"]
+    N9["Staging Deployment"]
+    N10["QA Sign-off"]
+    N11{{"Change Advisory Board Approval"}}
+    N12["Production Deployment"]
+    N13{"Rollback Triggered?"}
+    N14["Emergency Rollback"]
+    N15(["Post-Deploy Monitoring & Rollback Watch"])
+    N16(["Incident Review Opened"])
 
-    %% ⚡ CHANGED SECTION – Post-release monitoring and rollback path
-    J --> K[15-Min Automated Monitoring]
-    K --> L{Error Rate &<br>Latency OK?}
-    L --> |Breach| M[Automatic Rollback]
-    M --> N[Page On-Call Engineer]
-    N --> A
-    L --> |Healthy| O([Release Marked Stable])
+    N1 --> N2
+    N2 -->|No| N3
+    N3 -.->|Revise| N2
+    N2 --> N4
+    N4 --> N5
+    N5 -->|Fail| N4
+    N5 --> N6
+    N6 --> N7
+    N7 -->|No| N8
+    N8 -.->|Retest| N6
+    N7 --> N9
+    N9 --> N10
+    N10 --> N11
+    N11 --> N12
+    N12 --> N13
+    N13 -->|Yes| N14
+    N13 -->|No| N15
+    N14 --> N16
 
-    classDef monitoring fill:#e0f0ff,stroke:#2980b9,stroke-width:2px
-    classDef rollback fill:#fde8e8,stroke:#c0392b,stroke-width:2px
-    classDef stable fill:#e8fde8,stroke:#27ae60,stroke-width:2px
+    %% ⚡ CHANGED SECTION — Added post-production automated monitoring window with breach/stable outcomes
+    N17{{"15-Min Automated Monitoring Window"}}
+    N18{"Error Rate / Latency Breach?"}
+    N19["Automatic Rollback to Previous Stable Version"]
+    N20["Page On-Call Engineer"]
+    N21(["Release Marked Stable"])
 
-    class K,L monitoring
-    class M,N rollback
-    class O stable
+    N15 --> N17
+    N17 --> N18
+    N18 -->|Yes| N19
+    N19 --> N20
+    N20 --> N16
+    N18 -->|No| N21
+    %% END CHANGED SECTION
 
 %% EXPLANATION:
-%% Extended the diagram past "Production Release" with a 15-minute automated monitoring window that checks error rate and latency. Added an exclusive gateway: if thresholds are breached, the flow triggers an automatic rollback followed by paging the on-call engineer (who then feeds back to Dev Complete for a fix). If metrics stay healthy, the release is marked stable and the process closes out. Applied distinct style classes for monitoring, rollback, and stable-release nodes for visual clarity.
+%% This diagram documents an Engineering/DevOps software release approval
+%% pipeline, tracing a code change from development completion through
+%% review, testing, security scanning, staging, QA, change control board
+%% approval, production deployment, and post-deploy rollback monitoring.
+
+%% ═══ ROLES ═══
+%% R01 Engineering / Release Pipeline
+
+%% ═══ CHANGE LOG ═══
+%% [1] Post-production monitoring window — Added a 15-minute automated monitoring checkpoint after Production Deployment that watches error rate/latency, auto-rolls-back and pages on-call on breach, or marks the release stable if metrics stay healthy.
