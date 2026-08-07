@@ -1,0 +1,65 @@
+flowchart TD
+ %% EXPLANATION:
+ %% This diagram covers Accounts Payable/Procurement/Finance invoice processing:
+ %% resolving discrepancies found during three-way matching (PO, receipt, invoice)
+ %% before payment can be approved and released.
+
+ START(["Invoice Received"])
+ %% R01
+
+ subgraph AP["Accounts Payable"]
+    direction TB
+    MATCH["Match Invoice to PO and Receipt (3-Way Match)"]
+    %% R01
+    GATE1{"Match Successful?"}
+    %% R01
+    SUBMIT["Submit for Payment Approval"]
+    %% R01
+    NOTIFY["Notify Procurement of Discrepancy"]
+    %% R01
+    RECEIVE["Receive Corrected Documentation"]
+    %% R01
+ end
+
+ subgraph PROC["Procurement"]
+    direction TB
+    INVEST["Investigate Discrepancy"]
+    %% R02
+    GATE2{"Root Cause?"}
+    %% R02
+    VENDOR["Contact Vendor for Correction"]
+    %% R02
+    INTERNAL["Correct Internal Receipt Record"]
+    %% R02
+    CONFIRM["Confirm Correction with Requester"]
+    %% R02
+ end
+
+ subgraph FM["Finance Manager"]
+    direction TB
+    APPROVE["Approve and Release Payment"]
+    %% R03
+ end
+
+ END(["Payment Released"])
+ %% R03
+
+ START --> MATCH
+ MATCH --> GATE1
+ GATE1 -->|Yes| SUBMIT
+ GATE1 -->|No| NOTIFY
+ SUBMIT --> APPROVE
+ APPROVE --> END
+ NOTIFY --> INVEST
+ INVEST --> GATE2
+ GATE2 -->|Vendor error| VENDOR
+ GATE2 -->|Internal error| INTERNAL
+ VENDOR --> CONFIRM
+ INTERNAL --> CONFIRM
+ CONFIRM --> RECEIVE
+ RECEIVE -->|Re-match| MATCH
+
+%% ═══ ROLES ═══
+%% R01 Accounts Payable
+%% R02 Procurement
+%% R03 Finance Manager
