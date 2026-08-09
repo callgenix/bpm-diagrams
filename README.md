@@ -1,18 +1,19 @@
-# Process Diagram Converter
+# GS4D - Governance System for Diagrams
 
 **Transform business process diagrams with natural language. No technical knowledge required.**
 
-https://callgenix.com
+https://callgenix.com // https://gs4d.app
 
 ---
 
 ## What It Does
 
-The Process Diagram Converter is an intelligent tool that modifies process diagrams (BPMN, Sequence, Flowchart, etc.) based on your natural language requests. Instead of manually editing complex diagrams, describe the change you want—and the tool intelligently updates your diagram in seconds.
+GS4D - Governance System for Diagrams is an intelligent tool that modifies process diagrams (BPMN, Sequence, Flowchart, etc.) based on your natural language requests. Instead of manually editing complex diagrams, describe the change you want—and the tool intelligently updates your diagram in seconds.
 
 **Example:**
-- **You say:** "Add a Hiring Manager approval step before onboarding. If approval is granted, proceed; otherwise, escalate."
-- **The tool delivers:** A restructured diagram with the new approval gate, complete with decision logic and escalation paths.
+
+* **You say:** "Add a Hiring Manager approval step before onboarding. If approval is granted, proceed; otherwise, escalate."
+* **The tool delivers:** A restructured diagram with the new approval gate, complete with decision logic and escalation paths.
 
 ---
 
@@ -65,54 +66,58 @@ Accelerate process improvement cycles. Changes that took hours now take seconds,
 ## Real-World Use Cases
 
 **Process Optimization**
-- Streamline approval workflows
-- Add new decision gates or conditional branches
-- Remove redundant steps
-- Reorganize participant responsibilities
+
+* Streamline approval workflows
+* Add new decision gates or conditional branches
+* Remove redundant steps
+* Reorganize participant responsibilities
 
 **Compliance & Audit**
-- Document process changes with automatic versioning
-- Maintain change history with objective-based summaries
-- Share modifications with stakeholders instantly
+
+* Document process changes with automatic versioning
+* Maintain change history with objective-based summaries
+* Share modifications with stakeholders instantly
 
 **Onboarding & Training**
-- Quickly generate updated process diagrams as procedures change
-- Keep training materials current without manual diagram updates
-- Version control ensures everyone sees the latest process
+
+* Quickly generate updated process diagrams as procedures change
+* Keep training materials current without manual diagram updates
+* Version control ensures everyone sees the latest process
 
 **Cross-Team Collaboration**
-- Propose changes in natural language (no diagram tool expertise needed)
-- Get instant visual feedback on proposed modifications
-- Share changes with team via integrated notifications
+
+* Propose changes in natural language (no diagram tool expertise needed)
+* Get instant visual feedback on proposed modifications
+* Share changes with team via integrated notifications
 
 ---
 
 ## Technical Highlights
 
-- **Advanced Language Model Integration** — Understands nuanced requests and translates them into accurate diagram modifications
-- **Intelligent Change Detection** — Identifies and highlights modified sections for easy review
-- **API-Driven Architecture** — Enterprise-grade security with proxy-based integrations
-- **Version Control & Audit Trail** — Complete history of all modifications with change objectives
-- **Real-Time Status Feedback** — Visual indicators showing processing time and completion status
-- **Multi-Format Diagram Support** — Handles industry-standard formats seamlessly
+* **Advanced Language Model Integration** — Understands nuanced requests and translates them into accurate diagram modifications
+* **Intelligent Change Detection** — Identifies and highlights modified sections for easy review
+* **API-Driven Architecture** — Enterprise-grade security with proxy-based integrations
+* **Version Control & Audit Trail** — Complete history of all modifications with change objectives
+* **Real-Time Status Feedback** — Visual indicators showing processing time and completion status
+* **Multi-Format Diagram Support** — Handles industry-standard formats seamlessly
 
 ---
 
 ## Built For
 
-- **Business Process Analysts** who need faster diagram iteration
-- **Technical Teams** managing process documentation
-- **Organizations** looking to streamline process improvement workflows
-- **Anyone** who wants to modify diagrams without becoming a diagram expert
+* **Business Process Analysts** who need faster diagram iteration
+* **Technical Teams** managing process documentation
+* **Organizations** looking to streamline process improvement workflows
+* **Anyone** who wants to modify diagrams without becoming a diagram expert
 
 ---
 
 ## Privacy & Security
 
-- Your diagrams are processed securely
-- Diagram data is not stored or used for training
-- Version history is maintained in your own GitHub repository
-- Team notifications go only to channels you specify
+* Your diagrams are processed securely
+* Diagram data is not stored or used for training
+* Version history is maintained in your own GitHub repository
+* Team notifications go only to channels you specify
 
 ---
 
@@ -127,13 +132,14 @@ Accelerate process improvement cycles. Changes that took hours now take seconds,
 ## About This Project
 
 This tool demonstrates advanced integration of AI language models with business process automation. It showcases:
-- Intelligent request interpretation and execution
-- Real-time visual feedback systems
-- Enterprise-grade version control integration
-- Seamless team collaboration workflows
+
+* Intelligent request interpretation and execution
+* Real-time visual feedback systems
+* Enterprise-grade version control integration
+* Seamless team collaboration workflows
 
 **Built with:** Modern web technologies, API integrations, and advanced language understanding.
 
 ---
 
-*Process Diagram Converter — Intelligent process documentation that keeps pace with your business.*
+*GS4D - Governance System for Diagrams — Intelligent process documentation that keeps pace with your business.*
