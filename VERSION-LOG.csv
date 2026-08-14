@@ -25,3 +25,4 @@ PROCM,007,Renamed the 'Contact Vendor for Correction' task to 'Escalate to Vendo
 CUSTM,001,Loaded a 3-shape starter diagram,MERMAID,2026-08-07 11:10,a7a92d9ff8d0
 RHONB,006,"Added a hexagon checkpoint ""15-Min Automated Monitoring Window"" after the existing ""Post-Deploy Moni…",SVG,2026-08-07 11:18,72bf2a202798
 CUSTM,002,"Renamed the START node label from ""Change Requested"" to ""Owner Regression Test"" a",MERMAID,2026-08-14 23:08,1576f547ae0f
+ITSEC,001,"Removed node n4 (""C0030 CAB C0031"") and rerouted the ""Yes"" edge from the C0029 decision gateway (n3)…",DRAWIO,2026-08-14 23:43,85e43aa7ebb9
