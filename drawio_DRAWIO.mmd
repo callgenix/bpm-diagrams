@@ -1,25 +1,53 @@
 flowchart TD
-    A([Change Request]) --> B{Emergency?}
-    B --> |Yes| C[Emergency CAB]
-    B --> |No| D[Standard Review]
-    C --> E[Expedited Approval]
-    D --> F[Weekly CAB Meeting]
-    F --> G{Approved?}
-    G --> |Yes| F1{Finance Impact?}
-    G --> |No| I[Return to Requester]
-    %% ⚡ CHANGED SECTION - Finance approval path with SLA escalation
-    F1 --> |Yes| F2[Finance Approval Request]
-    F1 --> |No| H[Schedule Change Window]
-    F2 --> F3{Approved within SLA?}
-    F3 --> |Yes| H
-    F3 --> |No - SLA Breach| F4[Auto-Escalate to Finance Director]
-    F4 --> F5{Director Decision}
-    F5 --> |Approved| H
-    F5 --> |Rejected| I
-    %% ⚡ END CHANGED SECTION
-    H --> J[Implementation]
-    J --> K{Successful?}
-    K --> |Yes| L[Post-Impl Review]
-    K --> |No| M[Incident Report]
-    L --> N([Close Change])
-    M --> N
+    n1(["Change Requested"])
+    %% R01
+    n2["C0027 & C0028"]
+    %% R01
+    n3{"C0029 Change?"}
+    %% R01
+    n5["C0032 CAB Review"]
+    %% R01
+    n7["C0033 Change C0034"]
+    %% R01
+    n6["C0035 Change"]
+    %% R01
+    n8{"C0036?"}
+    %% R01
+    n10["C0037"]
+    %% R01
+    n9["Post-C0035ation Review"]
+    %% R01
+    n12{"C0038?"}
+    %% R01
+    n13["C0039 to C0040 for C0041"]
+    %% R01
+    n11(["C0042 Change"])
+    %% R01
+
+    n1 --> n2
+    n2 --> n3
+    %% [1] start — removed CAB C0031 node, rerouted Yes branch directly to n6
+    n3 -->|Yes| n6
+    %% [1] end
+    n3 -->|No| n5
+    n5 --> n7
+    n7 --> n6
+    n6 --> n8
+    n8 -->|Yes| n9
+    n8 -.->|No| n10
+    n10 -.-> n9
+    n9 --> n12
+    n12 -->|Yes| n11
+    n12 -.->|No| n13
+    n13 -.-> n9
+
+%% EXPLANATION:
+%% This diagram represents an IT Change Management / Emergency Change Request process,
+%% covering the path from change request submission through emergency classification,
+%% CAB review, implementation, and post-implementation review with rework loops.
+
+%% ═══ ROLES ═══
+%% R01 Change Requester/Process
+
+%% ═══ CHANGE LOG ═══
+%% [1] Removed CAB C0031 node — deleted the "C0030 CAB C0031" task node and rerouted the "Yes" branch from the C0029 decision directly to the C0035 Change task.
