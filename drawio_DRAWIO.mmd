@@ -1,53 +1,41 @@
 flowchart TD
-    n1(["Change Requested"])
-    %% R01
-    n2["C0027 & C0028"]
-    %% R01
-    n3{"C0029 Change?"}
-    %% R01
-    n5["C0032 CAB Review"]
-    %% R01
-    n7["C0033 Change C0034"]
-    %% R01
-    n6["C0035 Change"]
-    %% R01
-    n8{"C0036?"}
-    %% R01
-    n10["C0037"]
-    %% R01
-    n9["Post-C0035ation Review"]
-    %% R01
-    n12{"C0038?"}
-    %% R01
-    n13["C0039 to C0040 for C0041"]
-    %% R01
-    n11(["C0042 Change"])
-    %% R01
+n1(["Change Requested"])
+n2["Risk & Impact Assessment"]
+n3{"Emergency Change?"}
+n5["Standard Weekly CAB Review"]
+n7["Schedule Change Window"]
+n6["Implement Change"]
+n8{"Implementation Successful?"}
+n10["Execute Backout Plan"]
+n9["Post-Implementation Review"]
+n12{"Root Cause Documented?"}
+n13["Return to Reviewer for Documentation"]
+n11(["Close Change"])
 
-    n1 --> n2
-    n2 --> n3
-    %% [1] start — removed CAB C0031 node, rerouted Yes branch directly to n6
-    n3 -->|Yes| n6
-    %% [1] end
-    n3 -->|No| n5
-    n5 --> n7
-    n7 --> n6
-    n6 --> n8
-    n8 -->|Yes| n9
-    n8 -.->|No| n10
-    n10 -.-> n9
-    n9 --> n12
-    n12 -->|Yes| n11
-    n12 -.->|No| n13
-    n13 -.-> n9
+n1 --> n2
+n2 --> n3
+%% ⚡ CHANGED SECTION — removed n4 node, rerouted Yes branch from n3 directly to n6
+n3 -->|Yes| n6
+%% END CHANGED SECTION
+n3 -->|No| n5
+n5 --> n7
+n7 --> n6
+n6 --> n8
+n8 -->|Yes| n9
+n8 -.->|No| n10
+n10 -.-> n9
+n9 --> n12
+n12 -->|Yes| n11
+n12 -.->|No| n13
+n13 -.-> n9
 
 %% EXPLANATION:
-%% This diagram represents an IT Change Management / Emergency Change Request process,
-%% covering the path from change request submission through emergency classification,
-%% CAB review, implementation, and post-implementation review with rework loops.
+%% This diagram documents an IT change management workflow, including
+%% Change Advisory Board (CAB) review, emergency change approval branches,
+%% implementation, and post-implementation review steps.
 
 %% ═══ ROLES ═══
-%% R01 Change Requester/Process
+%% R01 Change Requester/Process Owner
 
 %% ═══ CHANGE LOG ═══
-%% [1] Removed CAB C0031 node — deleted the "C0030 CAB C0031" task node and rerouted the "Yes" branch from the C0029 decision directly to the C0035 Change task.
+%% [1] Removed CAB Approval node — Deleted n4 "Expedited CAB Approval" and rerouted the "Yes" branch from n3 directly to n6 to preserve flow continuity.
