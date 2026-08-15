@@ -27,3 +27,4 @@ RHONB,006,"Added a hexagon checkpoint ""15-Min Automated Monitoring Window"" aft
 CUSTM,002,"Renamed the START node label from ""Change Requested"" to ""Owner Regression Test"" a",MERMAID,2026-08-14 23:08,1576f547ae0f
 ITSEC,001,"Removed node n4 (""C0030 CAB C0031"") and rerouted the ""Yes"" edge from the C0029 decision gateway (n3)…",DRAWIO,2026-08-14 23:43,85e43aa7ebb9
 ITSEC,002,"Removed node n4 (""Expedited CAB Approval"") and rerouted the ""Yes"" branch from decision n3 directly i…",DRAWIO,2026-08-15 02:07,ecc4c5f3391e
+ITSEC,003,"Removed node N4 (""C0030 CAB C0031"") as requested",DRAWIO,2026-08-15 02:38,d370bc6f12be
