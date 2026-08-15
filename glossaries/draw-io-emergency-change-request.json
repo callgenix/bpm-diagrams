@@ -1,0 +1,262 @@
+[
+    {
+        "real": "Invoice Discrepancy Resolution",
+        "placeholder": "C0002"
+    },
+    {
+        "real": "Accounts Payable",
+        "placeholder": "C0003"
+    },
+    {
+        "real": "Procurement",
+        "placeholder": "C0004"
+    },
+    {
+        "real": "Finance Manager",
+        "placeholder": "C0005"
+    },
+    {
+        "real": "Invoice Received",
+        "placeholder": "C0006"
+    },
+    {
+        "real": "Match Invoice",
+        "placeholder": "C0007"
+    },
+    {
+        "real": "Receipt",
+        "placeholder": "C0008"
+    },
+    {
+        "real": "Match",
+        "placeholder": "C0009"
+    },
+    {
+        "real": "Match Successful",
+        "placeholder": "C0010"
+    },
+    {
+        "real": "Payment Approval",
+        "placeholder": "C0011"
+    },
+    {
+        "real": "Release Payment",
+        "placeholder": "C0012"
+    },
+    {
+        "real": "Payment Released",
+        "placeholder": "C0013"
+    },
+    {
+        "real": "Notify Procurement",
+        "placeholder": "C0014"
+    },
+    {
+        "real": "Discrepancy",
+        "placeholder": "C0015"
+    },
+    {
+        "real": "Investigate Discrepancy",
+        "placeholder": "C0016"
+    },
+    {
+        "real": "Root Cause",
+        "placeholder": "C0017"
+    },
+    {
+        "real": "Contact Vendor",
+        "placeholder": "C0018"
+    },
+    {
+        "real": "Correction",
+        "placeholder": "C0019"
+    },
+    {
+        "real": "Correct Internal Receipt Record",
+        "placeholder": "C0020"
+    },
+    {
+        "real": "Confirm Correction",
+        "placeholder": "C0021"
+    },
+    {
+        "real": "Requester",
+        "placeholder": "C0022"
+    },
+    {
+        "real": "Receive Corrected Documentation",
+        "placeholder": "C0023"
+    },
+    {
+        "real": "Vendor",
+        "placeholder": "C0024"
+    },
+    {
+        "real": "Internal",
+        "placeholder": "C0025"
+    },
+    {
+        "real": "Rematch",
+        "placeholder": "C0026"
+    },
+    {
+        "real": "Risk",
+        "placeholder": "C0027"
+    },
+    {
+        "real": "Impact Assessment",
+        "placeholder": "C0028"
+    },
+    {
+        "real": "Emergency",
+        "placeholder": "C0029"
+    },
+    {
+        "real": "Expedited",
+        "placeholder": "C0030"
+    },
+    {
+        "real": "Approval",
+        "placeholder": "C0031"
+    },
+    {
+        "real": "Standard Weekly",
+        "placeholder": "C0032"
+    },
+    {
+        "real": "Schedule",
+        "placeholder": "C0033"
+    },
+    {
+        "real": "Window",
+        "placeholder": "C0034"
+    },
+    {
+        "real": "Implement",
+        "placeholder": "C0035"
+    },
+    {
+        "real": "Implementation Successful",
+        "placeholder": "C0036"
+    },
+    {
+        "real": "Execute Backout Plan",
+        "placeholder": "C0037"
+    },
+    {
+        "real": "Root Cause Documented",
+        "placeholder": "C0038"
+    },
+    {
+        "real": "Return",
+        "placeholder": "C0039"
+    },
+    {
+        "real": "Reviewer",
+        "placeholder": "C0040"
+    },
+    {
+        "real": "Documentation",
+        "placeholder": "C0041"
+    },
+    {
+        "real": "Close",
+        "placeholder": "C0042"
+    },
+    {
+        "real": "Software Release Approval Pipeline",
+        "placeholder": "C0043"
+    },
+    {
+        "real": "Revise",
+        "placeholder": "C0044"
+    },
+    {
+        "real": "Fail",
+        "placeholder": "C0045"
+    },
+    {
+        "real": "Retest",
+        "placeholder": "C0046"
+    },
+    {
+        "real": "Dev",
+        "placeholder": "C0047"
+    },
+    {
+        "real": "Code",
+        "placeholder": "C0048"
+    },
+    {
+        "real": "Address",
+        "placeholder": "C0049"
+    },
+    {
+        "real": "Comments",
+        "placeholder": "C0050"
+    },
+    {
+        "real": "Automated Test Suite",
+        "placeholder": "C0051"
+    },
+    {
+        "real": "Tests Pass",
+        "placeholder": "C0052"
+    },
+    {
+        "real": "Security Scan",
+        "placeholder": "C0053"
+    },
+    {
+        "real": "Scan Clear",
+        "placeholder": "C0054"
+    },
+    {
+        "real": "Fix Vulnerabilities",
+        "placeholder": "C0055"
+    },
+    {
+        "real": "Staging Deployment",
+        "placeholder": "C0056"
+    },
+    {
+        "real": "Signoff",
+        "placeholder": "C0057"
+    },
+    {
+        "real": "Advisory Board",
+        "placeholder": "C0058"
+    },
+    {
+        "real": "Production Deployment",
+        "placeholder": "C0059"
+    },
+    {
+        "real": "Rollback",
+        "placeholder": "C0060"
+    },
+    {
+        "real": "Triggered",
+        "placeholder": "C0061"
+    },
+    {
+        "real": "Emergency Rollback",
+        "placeholder": "C0062"
+    },
+    {
+        "real": "Monitoring",
+        "placeholder": "C0063"
+    },
+    {
+        "real": "Rollback Watch",
+        "placeholder": "C0064"
+    },
+    {
+        "real": "Incident",
+        "placeholder": "C0065"
+    },
+    {
+        "real": "Opened",
+        "placeholder": "C0066"
+    }
+]
