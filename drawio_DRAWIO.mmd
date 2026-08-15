@@ -1,41 +1,56 @@
 flowchart TD
-n1(["Change Requested"])
-n2["Risk & Impact Assessment"]
-n3{"Emergency Change?"}
-n5["Standard Weekly CAB Review"]
-n7["Schedule Change Window"]
-n6["Implement Change"]
-n8{"Implementation Successful?"}
-n10["Execute Backout Plan"]
-n9["Post-Implementation Review"]
-n12{"Root Cause Documented?"}
-n13["Return to Reviewer for Documentation"]
-n11(["Close Change"])
+ START(["Change Requested"])
+ %% R01
+ N2["C0027 & C0028"]
+ %% R01
+ N3{"C0029 Change?"}
+ %% R01
+ N5["C0032 CAB Review"]
+ %% R02
+ N7["C0033 Change C0034"]
+ %% R02
+ N6["C0035 Change"]
+ %% R01
+ N8{"C0036?"}
+ %% R01
+ N10["C0037"]
+ %% R01
+ N9["Post-C0035ation Review"]
+ %% R01
+ N12{"C0038?"}
+ %% R01
+ N13["C0039 to C0040 for C0041"]
+ %% R01
+ END(["C0042 Change"])
+ %% R01
 
-n1 --> n2
-n2 --> n3
-%% ⚡ CHANGED SECTION — removed n4 node, rerouted Yes branch from n3 directly to n6
-n3 -->|Yes| n6
-%% END CHANGED SECTION
-n3 -->|No| n5
-n5 --> n7
-n7 --> n6
-n6 --> n8
-n8 -->|Yes| n9
-n8 -.->|No| n10
-n10 -.-> n9
-n9 --> n12
-n12 -->|Yes| n11
-n12 -.->|No| n13
-n13 -.-> n9
+ START --> N2
+ N2 --> N3
+ %% [1] start
+ N3 -->|Yes| N6
+ %% [1] end
+ N3 -->|No| N5
+ N5 --> N7
+ N7 --> N6
+ N6 --> N8
+ N8 -->|Yes| N9
+ N8 -.->|No| N10
+ N10 -.-> N9
+ N9 --> N12
+ N12 -->|Yes| END
+ N12 -.->|No| N13
+ N13 -.-> N9
 
 %% EXPLANATION:
-%% This diagram documents an IT change management workflow, including
-%% Change Advisory Board (CAB) review, emergency change approval branches,
-%% implementation, and post-implementation review steps.
+%% This diagram represents an IT Service Management (ITSM) Emergency
+%% Change Request process, covering request intake, a fast-track
+%% versus standard Change Advisory Board (CAB) review decision,
+%% implementation, and iterative post-implementation review before
+%% final closure.
 
 %% ═══ ROLES ═══
-%% R01 Change Requester/Process Owner
+%% R01 Change Requester / Change Manager
+%% R02 Change Advisory Board (CAB)
 
 %% ═══ CHANGE LOG ═══
-%% [1] Removed CAB Approval node — Deleted n4 "Expedited CAB Approval" and rerouted the "Yes" branch from n3 directly to n6 to preserve flow continuity.
+%% [1] Removed CAB C0031 node — Removed node N4 ("C0030 CAB C0031") per request and rerouted the "Yes" branch from N3 directly to N6 to preserve flow continuity.
