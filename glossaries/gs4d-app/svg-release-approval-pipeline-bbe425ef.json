@@ -1,0 +1,102 @@
+[
+    {
+        "real": "Software Release Approval Pipeline",
+        "placeholder": "C0018"
+    },
+    {
+        "real": "Revise",
+        "placeholder": "C0019"
+    },
+    {
+        "real": "Fail",
+        "placeholder": "C0020"
+    },
+    {
+        "real": "Retest",
+        "placeholder": "C0021"
+    },
+    {
+        "real": "Dev",
+        "placeholder": "C0022"
+    },
+    {
+        "real": "Code",
+        "placeholder": "C0023"
+    },
+    {
+        "real": "Address",
+        "placeholder": "C0024"
+    },
+    {
+        "real": "Comments",
+        "placeholder": "C0025"
+    },
+    {
+        "real": "Automated Test Suite",
+        "placeholder": "C0026"
+    },
+    {
+        "real": "Tests Pass",
+        "placeholder": "C0027"
+    },
+    {
+        "real": "Security Scan",
+        "placeholder": "C0028"
+    },
+    {
+        "real": "Scan Clear",
+        "placeholder": "C0029"
+    },
+    {
+        "real": "Fix Vulnerabilities",
+        "placeholder": "C0030"
+    },
+    {
+        "real": "Staging Deployment",
+        "placeholder": "C0031"
+    },
+    {
+        "real": "Signoff",
+        "placeholder": "C0032"
+    },
+    {
+        "real": "Advisory Board",
+        "placeholder": "C0033"
+    },
+    {
+        "real": "Approval",
+        "placeholder": "C0034"
+    },
+    {
+        "real": "Production Deployment",
+        "placeholder": "C0035"
+    },
+    {
+        "real": "Rollback",
+        "placeholder": "C0036"
+    },
+    {
+        "real": "Triggered",
+        "placeholder": "C0037"
+    },
+    {
+        "real": "Emergency Rollback",
+        "placeholder": "C0038"
+    },
+    {
+        "real": "Monitoring",
+        "placeholder": "C0039"
+    },
+    {
+        "real": "Rollback Watch",
+        "placeholder": "C0040"
+    },
+    {
+        "real": "Incident",
+        "placeholder": "C0041"
+    },
+    {
+        "real": "Opened",
+        "placeholder": "C0042"
+    }
+]
