@@ -1,0 +1,66 @@
+[
+    {
+        "real": "Risk",
+        "placeholder": "C0002"
+    },
+    {
+        "real": "Impact Assessment",
+        "placeholder": "C0003"
+    },
+    {
+        "real": "Emergency",
+        "placeholder": "C0004"
+    },
+    {
+        "real": "Expedited",
+        "placeholder": "C0005"
+    },
+    {
+        "real": "Approval",
+        "placeholder": "C0006"
+    },
+    {
+        "real": "Standard Weekly",
+        "placeholder": "C0007"
+    },
+    {
+        "real": "Schedule",
+        "placeholder": "C0008"
+    },
+    {
+        "real": "Window",
+        "placeholder": "C0009"
+    },
+    {
+        "real": "Implement",
+        "placeholder": "C0010"
+    },
+    {
+        "real": "Implementation Successful",
+        "placeholder": "C0011"
+    },
+    {
+        "real": "Execute Backout Plan",
+        "placeholder": "C0012"
+    },
+    {
+        "real": "Root Cause Documented",
+        "placeholder": "C0013"
+    },
+    {
+        "real": "Return",
+        "placeholder": "C0014"
+    },
+    {
+        "real": "Reviewer",
+        "placeholder": "C0015"
+    },
+    {
+        "real": "Documentation",
+        "placeholder": "C0016"
+    },
+    {
+        "real": "Close",
+        "placeholder": "C0017"
+    }
+]
