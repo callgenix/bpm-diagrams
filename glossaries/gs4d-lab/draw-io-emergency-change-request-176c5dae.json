@@ -1,0 +1,42 @@
+[
+    {
+        "real": "Risk",
+        "placeholder": "C0003"
+    },
+    {
+        "real": "Impact Assessment",
+        "placeholder": "C0004"
+    },
+    {
+        "real": "Emergency",
+        "placeholder": "C0005"
+    },
+    {
+        "real": "Standard Weekly",
+        "placeholder": "C0006"
+    },
+    {
+        "real": "Schedule",
+        "placeholder": "C0007"
+    },
+    {
+        "real": "Window",
+        "placeholder": "C0008"
+    },
+    {
+        "real": "Implement",
+        "placeholder": "C0009"
+    },
+    {
+        "real": "Implementation Successful",
+        "placeholder": "C0010"
+    },
+    {
+        "real": "Root Cause Documented",
+        "placeholder": "C0011"
+    },
+    {
+        "real": "Close",
+        "placeholder": "C0012"
+    }
+]
